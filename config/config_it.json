@@ -1,0 +1,12 @@
+{
+    "header_keywords": {
+      "experience": ["esperienza", "lavoro"],
+      "education": ["formazione", "studi", "laurea", "diploma"],
+      "skills": ["competenze", "soft skills", "hard skills"],
+      "projects": ["progetti"]
+    },
+    "address_keywords": ["via", "viale", "piazza", "corso", "largo", "street", "road", "avenue", "boulevard", "lane", "drive"],
+    "languages_list": ["italiano", "inglese", "francese", "spagnolo", "tedesco", "cinese", "mandarino", "giapponese", "russo", "portoghese", "polacco", "arabo"],
+    "cert_keywords": ["certific", "attestat", "qualifica", "accredita"]
+  }
+  
