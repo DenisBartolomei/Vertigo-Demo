@@ -1,0 +1,5 @@
+re
+json
+PyMuPDF
+langdetect
+spacy
