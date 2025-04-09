@@ -1,12 +1,82 @@
 {
-    "header_keywords": {
-      "experience": ["esperienza", "lavoro"],
-      "education": ["formazione", "studi", "laurea", "diploma"],
-      "skills": ["competenze", "soft skills", "hard skills"],
-      "projects": ["progetti"]
-    },
-    "address_keywords": ["via", "viale", "piazza", "corso", "largo", "street", "road", "avenue", "boulevard", "lane", "drive"],
-    "languages_list": ["italiano", "inglese", "francese", "spagnolo", "tedesco", "cinese", "mandarino", "giapponese", "russo", "portoghese", "polacco", "arabo"],
-    "cert_keywords": ["certific", "attestat", "qualifica", "accredita"]
-  }
-  
+  "header_keywords": {
+    "experience": [
+      "esperienza",
+      "lavoro",
+      "storia lavorativa",
+      "esperienza lavorativa",
+      "esperienza professionale",
+      "background lavorativo"
+    ],
+    "education": [
+      "formazione",
+      "studi",
+      "laurea",
+      "diploma",
+      "istruzione",
+      "percorsi formativi",
+      "educazione"
+    ],
+    "skills": [
+      "competenze",
+      "soft skills",
+      "hard skills",
+      "abilità",
+      "capacità",
+      "expertise",
+      "proficienza"
+    ],
+    "projects": [
+      "progetti",
+      "iniziative",
+      "assegnazioni",
+      "compiti",
+      "portfolio progetti"
+    ]
+  },
+  "address_keywords": [
+    "via",
+    "viale",
+    "piazza",
+    "corso",
+    "largo",
+    "strada",
+    "vico",
+    "vicolo",
+    "contrada",
+    "street",
+    "road",
+    "avenue",
+    "boulevard",
+    "lane",
+    "drive",
+    "alley",
+    "piazzale"
+  ],
+  "languages_list": [
+    "italiano",
+    "inglese",
+    "francese",
+    "spagnolo",
+    "tedesco",
+    "cinese",
+    "mandarino",
+    "giapponese",
+    "russo",
+    "portoghese",
+    "polacco",
+    "arabo",
+    "olandese",
+    "portoghese brasiliano"
+  ],
+  "cert_keywords": [
+    "certific",
+    "attestat",
+    "qualifica",
+    "accredita",
+    "attestato",
+    "certificazione",
+    "credenziali",
+    "accreditamento"
+  ]
+}
