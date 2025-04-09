@@ -49,9 +49,7 @@ def normalize_text(text):
     """
     Normalizza il testo in due fasi:
       1. Rimuove gli spazi tra gruppi di lettere singole (>2 lettere).
-         Es: "R O S E L L I" -> "ROSELLINI"
       2. Converte in formato Title le parole scritte interamente in maiuscolo.
-         Es: "MATTEO" -> "Matteo"
     """
     # Fase 1
     def join_letters(match):
