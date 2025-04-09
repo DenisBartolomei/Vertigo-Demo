@@ -1,0 +1,54 @@
+Fullstack Java Developer – Finance Area BFF Banking Group – Milan, Italy
+
+About BFF Banking Group: BFF Bank S.p.A. is a banking institution with a strong presence in the market for over 40 years, listed on the Italian Stock Exchange, and continuously growing and expanding. It is the largest specialized finance operator in Italy and a European leader in the management and non-recourse factoring of commercial credits toward Public Administrations. Additionally, the Group holds a leading position in Italy in the Securities Services business and banking payment services.
+
+Role Purpose: We are looking for a Fullstack Java Developer to join our Technology & Processes Improvement department within the ICT Delivery team.
+
+As a Fullstack Java Developer, you will contribute to strengthening the team's technical capabilities while being actively involved in project activities and change requests, with a particular focus on NFS within our organizational unit. The role involves managing our proprietary factoring system and integrated third-party tools, while also supporting the unit manager and effectively collaborating with senior banking executives and business stakeholders.
+
+We seek an individual with strong analytical skills, problem-solving aptitude, and knowledge-sharing capability within the team. A solid background in Java Full Stack development and Oracle PL/SQL is required.
+
+Required Knowledge and Skills:
+Previous experience of 3-4 years in a similar role
+
+Database Management: Strong expertise in Oracle PL/SQL
+
+Backend and Frontend Development: Advanced knowledge of Java J2EE, Spring Framework, Quarkus, Node.js, Angular, JPA
+
+Preferred Skills:
+
+Deep understanding of REST APIs and microservices architecture principles
+
+Experience with Eclipse, IntelliJ development tools
+
+Familiarity with version control and CI/CD tools (Git, Jenkins, Azure DevOps)
+
+Additional Skills:
+Strong teamwork and collaboration skills
+
+High attention to precision and work organization
+
+Problem-solving mindset
+
+Excellent proficiency in English
+
+Work Location: Milan – Viale Scarampo
+
+What BFF Bank Offers:
+A stimulating and challenging work environment with high growth opportunities and a strong learning culture
+
+Permanent contract under the national banking sector agreement (CCNL del credito)
+
+Hybrid work model
+
+Meal vouchers, available both on-site and during remote work
+
+Reward system
+
+Corporate welfare benefits
+
+Opportunity to join one of our pension funds
+
+Supplementary health insurance
+
+At BFF Bank, we ensure that everyone has access to equal opportunities and fair treatment. We assess candidates based on merit, skills, and capabilities, regardless of ethnicity, age, gender, disability, or other personal characteristics such as marital or parental status. This approach allows our Group to welcome and foster top talent, ensuring that hiring decisions are based on objective, non-discriminatory, and meritocratic criteria.

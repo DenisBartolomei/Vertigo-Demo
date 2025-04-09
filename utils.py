@@ -253,4 +253,82 @@ def parse_cv(text):
         "keywords": keywords
     }
 
+def simple_txt(file_path):
+    """
+    Legge un file .txt, rimuove spazi multipli e newline in eccesso,
+    restituendo il testo pulito.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            text = file.read()
+        # Rimuove spazi multipli e newline sostituiti con uno spazio
+        text = re.sub(r"\s+", " ", text)
+        return text.strip()
+    except FileNotFoundError:
+        return f"Errore: Il file '{file_path}' non è stato trovato."
+
+def clean_job_title(title):
+    """
+    Se nel job title sono presenti trattini, due punti o altri segni di punteggiatura,
+    restituisce la parte a sinistra del primo delimitatore.
+    """
+    # Specifica i delimitatori da considerare: trattino (normale o lungo) e due punti.
+    parts = re.split(r'[\-:–]', title)
+    return parts[0].strip()
+
+def extract_company_and_title(text, n_sentences=3):
+    """
+    Estrae il datore di lavoro (company) e il job title da un'offerta di lavoro.
+    
+    Strategia:
+      - Company: prendi la prima entità di tipo ORG individuata da spaCy.
+      - Job Title: analizza le prime n_sentences (default 3) e raccogli i noun chunk
+                   che non siano parte di un'entità ORG. Tra questi candidati, seleziona il più
+                   lungo e puliscilo: se contiene trattini, due punti o punteggiatura, ne prende la parte
+                   sinistra.
+    
+    :param text: Testo dell'offerta di lavoro
+    :param n_sentences: Numero di frasi iniziali da considerare per l'estrazione del job title.
+    :return: Dizionario con "company" e "job_title"
+    """
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(text)
+    
+    # --- Estrazione dell'azienda ---
+    company = "Unknown Company"
+    for ent in doc.ents:
+        if ent.label_ == "ORG":
+            company = ent.text.strip()
+            break
+    
+    # --- Estrazione del job title ---
+    job_title = "Unknown Title"
+    candidate_chunks = []
+    sents = list(doc.sents)
+    
+    # Analizza le prime n frasi
+    for sent in sents[:n_sentences]:
+        for chunk in sent.noun_chunks:
+            # Esclude i noun chunk che sono interamente contenuti in un'entità ORG
+            if any(chunk.start >= ent.start and chunk.end <= ent.end 
+                   for ent in doc.ents if ent.label_ == "ORG"):
+                continue
+            candidate_chunks.append(chunk)
+    
+    if candidate_chunks:
+        # Seleziona il noun chunk con il maggior numero di token
+        selected_chunk = max(candidate_chunks, key=lambda c: len(c))
+        raw_title = selected_chunk.text.strip()
+        # Se il chunk contiene punteggiatura (trattini, due punti, ecc), prendiamo la parte sinistra
+        job_title = clean_job_title(raw_title)
+    else:
+        # Fallback: usa il testo della prima frase se non ci sono candidati
+        if sents:
+            job_title = clean_job_title(sents[0].text.strip())
+    
+    return {"company": company, "job_title": job_title}
+
+
+
+
 
