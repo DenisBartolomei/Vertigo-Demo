@@ -1,8 +1,12 @@
 
 from utils import *
 
-file_path = './cvs/MatteoRosellini_CV.pdf'  # Inserisci il percorso corretto del file PDF
-text_cv = leggi_pdf(file_path)
+# -----------------------------------------------------------------------------------------
+# PARSING DEL CV
+# -----------------------------------------------------------------------------------------
+cv_path = './cvs/MatteoRosellini_CV.pdf'  # Inserisci il percorso corretto del file PDF
+
+text_cv = leggi_pdf(cv_path)
 parsed_cv = parse_cv(text_cv)
 print("Lingua rilevata:", parsed_cv["language"])
 print("=== Informazioni Personali ===")
@@ -21,3 +25,16 @@ for section, content in parsed_cv["sections"].items():
     print(content)
 print("\n=== Parole Chiave Comuni ===")
 print(parsed_cv["keywords"]["common_words"])
+
+# -----------------------------------------------------------------------------------------
+# PARSING DEL JOB OFFER
+# -----------------------------------------------------------------------------------------
+job_path = "./jobs/BFF_Banking_Group.txt"
+cleaned_text = simple_txt(job_path)
+print("--- Testo Pulito ---")
+print(cleaned_text)
+print("--------------------")
+
+result = extract_company_and_title(cleaned_text, n_sentences=3)  # oppure n_sentences=4
+print("Company:", result["company"])
+print("Job Title:", result["job_title"])
