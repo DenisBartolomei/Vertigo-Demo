@@ -3,6 +3,7 @@ import json
 import fitz  # PyMuPDF
 from langdetect import detect, DetectorFactory
 from collections import Counter
+import spacy
 
 # Per risultati ripetibili nella rilevazione della lingua
 DetectorFactory.seed = 0
