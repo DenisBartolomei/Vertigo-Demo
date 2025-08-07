@@ -1,8 +1,0 @@
-re
-json
-PyMuPDF
-langdetect
-spacy
-pandas 
-torch
-sentence-transformers
