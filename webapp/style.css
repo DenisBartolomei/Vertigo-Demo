@@ -1,0 +1,57 @@
+/* ---- BACKGROUND PRINCIPALE ---- */
+/* Seleziona il blocco principale dell'app Streamlit */
+[data-testid="stAppViewContainer"] {
+    background-color: #eff5f6;
+}
+/* Seleziona la sidebar */
+[data-testid="stSidebar"] {
+    background-color: #ffffff; /* Un tono leggermente più scuro per contrasto */
+}
+
+/* ---- BOTTONI ---- */
+/* Seleziona tutti i bottoni */
+.stButton>button {
+    border-color: #8c5cf4;
+    color: white; /* Testo bianco per leggibilità */
+    background-color: #8c5cf4;
+    transition: all 0.2s ease-in-out; /* Aggiunge una transizione fluida */
+}
+/* Cambia l'aspetto quando il mouse passa sopra (hover) */
+.stButton>button:hover {
+    border-color: #6a3ddb;
+    color: white;
+    background-color: #6a3ddb;
+    transform: scale(1.02); /* Leggero effetto di ingrandimento */
+}
+/* Cambia l'aspetto quando il bottone è premuto (active) */
+.stButton>button:active {
+    border-color: #502ca1 !important;
+    background-color: #502ca1 !important;
+    transform: scale(0.98); /* Leggero effetto di pressione */
+}
+/* Rende il bottone "primary" leggermente più evidente */
+.st-emotion-cache-19rxj4l, .st-emotion-cache-1um6lzz {
+     border: 2px solid #ffffff !important;
+     box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+}
+
+
+/* ---- ALTRI ELEMENTI PER UN LOOK MIGLIORE ---- */
+/* Cambia il colore del testo principale per una migliore leggibilità sullo sfondo blu */
+body, .st-emotion-cache-16idsys p {
+    color: white;
+}
+/* Cambia il colore dei titoli */
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+/* Rende lo sfondo degli expander e di altri container leggermente trasparente */
+.st-emotion-cache-1r6slb0, [data-testid="stExpander"], [data-testid="stRadio"] {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1rem;
+}
+/* Rimuove lo sfondo bianco dietro l'area della chat message */
+[data-testid="stChatMessage"] {
+    background-color: transparent;
+}
