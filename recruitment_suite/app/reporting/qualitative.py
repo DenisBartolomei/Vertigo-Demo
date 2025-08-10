@@ -2,16 +2,15 @@
 # Scopo: Generare un report di posizionamento qualitativo per un candidato, confrontandolo con i trend di mercato.
 
 import json
-import openai
 from recruitment_suite.config import settings
+from interviewer.llm_service import get_llm_response
 
-def generate_qualitative_llm_report(candidate_json: dict, market_json: dict, job_offer_text: str, openai_client: openai.OpenAI) -> str:
+
+def generate_qualitative_llm_report(candidate_json: dict, market_json: dict, job_offer_text: str) -> str:
     """
     Usa un LLM per generare un report qualitativo che confronta la carriera di un
     candidato con i trend di mercato, contestualizzandolo rispetto all'offerta di lavoro.
     """
-    if not openai_client:
-        return "Cliente OpenAI non disponibile. Impossibile generare il report."
 
     system_prompt = """
     Sei un partner strategico per l'acquisizione di talenti.
@@ -63,16 +62,10 @@ def generate_qualitative_llm_report(candidate_json: dict, market_json: dict, job
         candidate_data=json.dumps(candidate_json, indent=2, ensure_ascii=False)
     )
 
-    try:
-        response = openai_client.chat.completions.create(
-            model=settings.LLM_MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.4,
-            max_tokens=1000
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        return f"Errore durante la generazione del report LLM: {e}"
+    return get_llm_response(
+        prompt=user_prompt,
+        model=settings.LLM_MODEL,
+        system_prompt=system_prompt,
+        temperature=0.4,
+        max_tokens=1000
+    )

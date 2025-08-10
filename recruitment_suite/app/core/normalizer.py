@@ -13,24 +13,20 @@ from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse as universal_date_parser
 from sentence_transformers import SentenceTransformer, util
 from tqdm import tqdm
+from interviewer.llm_service import get_llm_response
 
 from recruitment_suite.config import settings
 
 class CVNormalizer:
     def __init__(self):
         print("Inizializzazione del Normalizzatore CV...")
-        if not settings.OPENAI_API_KEY:
-            raise ValueError("Chiave API OpenAI non trovata per la normalizzazione del CV.")
-        self.llm_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-        
+        # Non si valida più la chiave localmente: viene gestita da llm_service
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.embedding_model = SentenceTransformer(settings.EMBEDDING_MODEL_NAME, device=self.device)
         print(f"Normalizzazione CV: Modello '{settings.EMBEDDING_MODEL_NAME}' caricato su {self.device.upper()}.")
-        
-        # Prepara i dati una sola volta all'avvio
+
         self._prepare_esco_data()
-        
-        # Carica i dati necessari da MongoDB e li assegna agli attributi della classe
+
         self.load_data_from_mongo()
     
     def load_data_from_mongo(self):
@@ -113,67 +109,36 @@ class CVNormalizer:
     def _extract_from_cv(self, cv_path: str) -> dict:
         print(f"1. Estrazione testo da '{cv_path}'...")
         try:
-            with fitz.open(cv_path) as doc: 
+            with fitz.open(cv_path) as doc:
                 full_text = "".join(page.get_text() for page in doc)
-            
-            response = self.llm_client.chat.completions.create(
-                model=settings.LLM_MODEL, 
-                messages=[
-                    {"role": "system", "content": settings.LLM_PROMPT_CV_EXTRACTION_NORM}, 
-                    {"role": "user", "content": f"Testo del CV:\n{full_text}"}
-                ], 
-                response_format={"type": "json_object"}, 
-                temperature=0.0
+            raw = get_llm_response(
+                prompt=f"Testo del CV:\n{full_text}",
+                model=settings.LLM_MODEL,
+                system_prompt=settings.LLM_PROMPT_CV_EXTRACTION_NORM,
+                temperature=0.0,
+                max_tokens=2000
             )
-            structured_data = json.loads(response.choices[0].message.content)
+            structured_data = json.loads(raw)
             if not structured_data.get("experience"):
-                 print("ATTENZIONE: L'LLM non ha estratto esperienze lavorative dal CV.")
-                 return {}
+                print("ATTENZIONE: L'LLM non ha estratto esperienze lavorative dal CV.")
+                return {}
             print("Estrazione LLM completata con successo.")
             return structured_data
         except Exception as e:
             print(f"ERRORE CRITICO durante l'estrazione dal CV: {e}")
             return {}
-    """
-    def _parse_and_filter_experiences(self, experiences: list) -> list:
-        print("2. Parsing e filtraggio delle esperienze...")
-        valid_experiences = []
-        for pos in experiences:
-            title = pos.get('title', '')
-            if not title or any(keyword in title.lower() for keyword in settings.NON_JOB_KEYWORDS_NORM): 
-                print(f"  - Scartata esperienza non lavorativa: '{title}'")
-                continue
-            try:
-                start = universal_date_parser(pos['start_date'])
-                end_str = pos.get('end_date', 'present')
-                end = datetime.now() if 'present' in end_str.lower() or 'oggi' in end_str.lower() else universal_date_parser(end_str)
-                duration = relativedelta(end, start).years * 12 + relativedelta(end, start).months
-                if duration >= settings.MIN_EXPERIENCE_MONTHS_NORM:
-                    valid_experiences.append({'title': title, 'description': pos.get('description', ''), 'duration_months': duration})
-                else:
-                    print(f"  - Scartata esperienza per durata insufficiente (<{settings.MIN_EXPERIENCE_MONTHS_NORM} mesi): '{title}'")
-            except (ValueError, TypeError, KeyError) as e:
-                print(f"  - ATTENZIONE: Impossibile parsare l'esperienza '{title}'. Errore: {e}. Verrà saltata.")
-                continue
-        return valid_experiences
-    """
 
     def _extract_from_text(self, cv_text: str) -> dict:
-        """
-        Esegue l'estrazione strutturata delle esperienze direttamente dal testo del CV (senza aprire un PDF).
-        """
         print("1. Estrazione strutturata dal testo del CV (senza file PDF)...")
         try:
-            response = self.llm_client.chat.completions.create(
+            raw = get_llm_response(
+                prompt=f"Testo del CV:\n{cv_text}",
                 model=settings.LLM_MODEL,
-                messages=[
-                    {"role": "system", "content": settings.LLM_PROMPT_CV_EXTRACTION_NORM},
-                    {"role": "user", "content": f"Testo del CV:\n{cv_text}"}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.0
+                system_prompt=settings.LLM_PROMPT_CV_EXTRACTION_NORM,
+                temperature=0.0,
+                max_tokens=2000
             )
-            structured_data = json.loads(response.choices[0].message.content)
+            structured_data = json.loads(raw)
             if not structured_data.get("experience"):
                 print("ATTENZIONE: L'LLM non ha estratto esperienze lavorative dal testo del CV.")
                 return {}
@@ -233,37 +198,36 @@ class CVNormalizer:
         normalized_list = []
         for exp in valid_experiences:
             print(f"  > Normalizzando '{exp['title']}'...")
-            prompt = settings.LLM_PROMPT_ENRICHMENT_IT_NORM.format(title=exp['title'], description=exp['description'])
+            prompt = settings.LLM_PROMPT_ENRICHMENT_IT_NORM.format(
+                title=exp['title'], description=exp['description']
+            )
             try:
-                resp = self.llm_client.chat.completions.create(model=settings.LLM_MODEL, messages=[{"role": "user", "content": prompt}], response_format={"type": "json_object"}, temperature=0.15)
-                enriched_text = json.loads(resp.choices[0].message.content).get("enriched_text")
-
+                raw = get_llm_response(
+                    prompt=prompt,
+                    model=settings.LLM_MODEL,
+                    system_prompt="Sei un esperto di semantica HR.",
+                    temperature=0.15,
+                    max_tokens=800
+                )
+                enriched_text = json.loads(raw).get("enriched_text")
                 if enriched_text:
                     query_embedding = self.embedding_model.encode(enriched_text, convert_to_tensor=True, device=self.device)
-
-                    # --- INIZIO BLOCCO CORRETTO ---
-                    # 1. Converti l'array NumPy della matrice di embeddings in un tensore PyTorch
                     embeddings_tensor = torch.tensor(self.esco_embeddings_matrix, device=self.device)
-
-                    # 2. Ora che sono entrambi tensori, forza lo stesso tipo di dato (dtype)
-                    query_embedding_float = query_embedding.to(dtype=torch.float32)
-                    embeddings_matrix_float = embeddings_tensor.to(dtype=torch.float32)
-
-                    # 3. Ora il calcolo funzionerà
-                    cos_scores = util.cos_sim(query_embedding_float, embeddings_matrix_float)[0]
-                    # --- FINE BLOCCO CORRETTO ---
-
+                    cos_scores = util.cos_sim(query_embedding.to(dtype=torch.float32), embeddings_tensor.to(dtype=torch.float32))[0]
                     top_results = torch.topk(cos_scores, k=settings.TOP_N_MATCHES_NORM)
-                    matches = [{'esco_title': self.occupations_df.iloc[idx.item()]['Title'], 'similarity': f"{score.item():.4f}"} for score, idx in zip(top_results.values, top_results.indices)]
+                    matches = [
+                        {'esco_title': self.occupations_df.iloc[idx.item()]['Title'], 'similarity': f"{score.item():.4f}"}
+                        for score, idx in zip(top_results.values, top_results.indices)
+                    ]
                     normalized_list.append({
-                        "original_title": exp['title'], 
-                        "duration_months": exp['duration_months'], 
+                        "original_title": exp['title'],
+                        "duration_months": exp['duration_months'],
                         "esco_matches": matches
                     })
                     print(f"    -> Match trovato.")
                 else:
                     print(f"    -> Arricchimento saltato (testo nullo dall'LLM).")
-            except Exception as e: 
+            except Exception as e:
                 print(f"  - ERRORE durante l'arricchimento/matching per '{exp['title']}': {e}")
         return normalized_list
 

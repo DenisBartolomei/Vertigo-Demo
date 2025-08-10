@@ -84,11 +84,10 @@ def run_market_benchmark_from_text(
 
     # --- 4. Generazione testo qualitativo (invariata) ---
     qualitative_text = generate_qualitative_llm_report(
-        candidate_json=candidate_json,
-        market_json=market_json,
-        job_offer_text=job_description_text,
-        openai_client=pipeline.openai_client
-    )
+    candidate_json=candidate_json,
+    market_json=market_json,
+    job_offer_text=job_description_text
+)
 
     # --- 5. Restituzione dei risultati pronti per MongoDB ---
     return qualitative_text, chart_cat_base64, chart_skills_base64
