@@ -87,7 +87,7 @@ def run_feedback_pipeline(session_id: str) -> str | None:
     # Inizializza le variabili a None per gestire i casi in cui il benchmark non viene eseguito
     qualitative_text = None
     chart_cat_b64 = None
-    chart_skills_b64 = None
+    market_skills_list = None
 
     # La logica per ottenere i dati dal DB rimane la stessa
     jd_text = ""
@@ -108,7 +108,7 @@ def run_feedback_pipeline(session_id: str) -> str | None:
     # Esegui il benchmark solo se hai i dati necessari
     if jd_text and cv_text_for_market:
         # Cattura i 3 valori restituiti dalla funzione
-        qualitative_text, chart_cat_b64, chart_skills_b64 = run_market_benchmark_from_text(
+        qualitative_text, chart_cat_b64, market_skills_list = run_market_benchmark_from_text(
             job_description_text=jd_text,
             cv_text=cv_text_for_market,
             offer_title=role_title
@@ -118,8 +118,8 @@ def run_feedback_pipeline(session_id: str) -> str | None:
             save_stage_output(session_id, "market_benchmark_text", qualitative_text)
         if chart_cat_b64:
             save_stage_output(session_id, "market_chart_categories_base64", chart_cat_b64)
-        if chart_skills_b64:
-            save_stage_output(session_id, "market_chart_skills_base64", chart_skills_b64)
+        if market_skills_list:
+            save_stage_output(session_id, "market_chart_skills_base64", market_skills_list)
     else:
         print("Avviso: JD o testo CV non disponibili; benchmark di mercato saltato.")
 
@@ -155,10 +155,10 @@ def run_feedback_pipeline(session_id: str) -> str | None:
     create_feedback_pdf(
         report_content=final_report_content,
         output_path=temp_pdf_path,
-        # Passiamo solo i dati che esistono e che la funzione si aspetta
+        # Passiamo i dati che la funzione si aspetta ora:
         market_benchmark_text=qualitative_text,
         market_chart_categories_base64=chart_cat_b64,
-        market_chart_skills_base64=chart_skills_b64
+        market_skills_list=market_skills_list 
     )
     
     pdf_path = ""

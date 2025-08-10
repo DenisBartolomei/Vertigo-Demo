@@ -42,11 +42,11 @@ def print_dossiers(dossier_data: list, score_map: dict):
         print(f"    {skills_preview}" if p['skills'] else "    Nessuna competenza rilevata.")
         print("-" * 55)
 
-def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | None, str | None]:
+def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | None, list[str] | None]:
     """
-    Analizza i dati dei profili, genera due grafici, li converte in stringhe Base64
-    e restituisce i dati di mercato e le stringhe dei grafici.
-    Restituisce: (DataFrame, grafico1_base64, grafico2_base64)
+    Analizza i dati dei profili, genera un grafico delle categorie, estrae le skill
+    più comuni e restituisce i dati e gli artefatti.
+    Restituisce: (DataFrame, grafico_categorie_base64, lista_top_skills)
     """
     if not results_data:
         print("Nessun dato da visualizzare.")
@@ -55,8 +55,6 @@ def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | No
     # --- Logica per caricare la gerarchia ESCO (invariata) ---
     hierarchy_map = {}
     try:
-        # ... (il tuo codice per caricare hierarchy_map da MongoDB)
-        # Import necessari (se non già presenti a livello di modulo)
         from recruitment_suite.config import settings
         from services.data_manager import db
         collection_name = settings.MONGO_COLLECTION_ESCO_HIERARCHY
@@ -73,9 +71,9 @@ def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | No
     # Inizializza le variabili di ritorno
     category_market_df = None
     chart1_base64 = None
-    chart2_base64 = None
+    top_skills_list = None # <<< Nuova variabile per la lista di skill
 
-    # --- Grafico 1: Categorie Professionali ---
+    # --- Grafico 1: Categorie Professionali (invariato) ---
     all_past_experiences = [exp for p in results_data for exp in p.get('esco_experiences', [])[1:]]
     if all_past_experiences:
         df_exp = pd.DataFrame(all_past_experiences)
@@ -93,7 +91,6 @@ def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | No
             # ... (logica di plotting invariata) ...
             fig1.tight_layout()
             
-            # --- MODIFICA CHIAVE: Converti in Base64 invece di salvare ---
             buffer = BytesIO()
             fig1.savefig(buffer, format='png', bbox_inches='tight')
             buffer.seek(0)
@@ -101,21 +98,15 @@ def visualize_results(results_data: list) -> tuple[pd.DataFrame | None, str | No
             plt.close(fig1)
             print("Grafico delle categorie generato in memoria (Base64).")
 
-    # --- Grafico 2: Competenze ---
+    # >>> MODIFICA: Analisi delle competenze senza creare il grafico <<<
     all_skills = [s for p in results_data for s in p.get('skills', [])]
     if all_skills:
-        top_15_skills = pd.Series(all_skills).value_counts().head(15)
-        fig2, ax2 = plt.subplots(figsize=(12, 8))
-        top_15_skills.sort_values().plot(kind='barh', ax=ax2, color='gold')
-        # ... (logica di plotting invariata) ...
-        fig2.tight_layout()
+        # Calcola le 15 skill più comuni
+        top_15_skills_series = pd.Series(all_skills).value_counts().head(15)
+        # Estrai i nomi delle skill (l'indice della Series) in una lista
+        top_skills_list = top_15_skills_series.index.tolist()
+        print(f"Estraete le {len(top_skills_list)} skill più comuni dal pool di candidati.")
+        # Il codice per generare il grafico (fig2, ax2, ecc.) è stato rimosso.
 
-        # --- MODIFICA CHIAVE: Converti in Base64 invece di salvare ---
-        buffer = BytesIO()
-        fig2.savefig(buffer, format='png', bbox_inches='tight')
-        buffer.seek(0)
-        chart2_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-        plt.close(fig2)
-        print("Grafico delle competenze generato in memoria (Base64).")
-
-    return category_market_df, chart1_base64, chart2_base64
+    # Restituisce il DataFrame, il primo grafico e la nuova lista di skill
+    return category_market_df, chart1_base64, top_skills_list

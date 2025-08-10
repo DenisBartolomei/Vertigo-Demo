@@ -51,7 +51,7 @@ def generate_qualitative_llm_report(candidate_json: dict, market_json: dict, job
     Sintetizza in 2-3 frasi quali sono i percorsi di carriera più comuni o i ruoli propedeutici più importanti che emergono dai dati di mercato per arrivare a ricoprire il ruolo target.
 
     ### Valutazione del Candidato
-    *   **Allineamento con i Trend:** Valuta qualitativamente se il percorso del candidato è tradizionale (in linea con il mercato), atipico ma coerente, o con evidenti deviazioni.
+    *   Allineamento con i Trend: Valuta qualitativamente se il percorso del candidato è tradizionale (in linea con il mercato), atipico ma coerente, o con evidenti deviazioni.
 
     Mantieni un tono professionale, oggettivo e costruttivo. NON ripetere i dati grezzi dei JSON.
     """

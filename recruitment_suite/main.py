@@ -80,7 +80,7 @@ def main():
             final_dossiers = create_dossiers_for_promoted(promoted_ids, candidates_data_full, skill_fetcher)
             if final_dossiers:
                 print_dossiers(final_dossiers, score_map)
-                market_career_data = visualize_results(final_dossiers)
+                market_career_data, chart_categories_b64, market_skills_list = visualize_results(final_dossiers)
         else:
             print("\nNessun candidato è stato promosso dall'LLM.")
     else:

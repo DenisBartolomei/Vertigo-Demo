@@ -19,10 +19,10 @@ def run_market_benchmark_from_text(
     job_description_text: str,
     cv_text: str,
     offer_title: str
-) -> tuple[str | None, str | None, str | None]: # <-- MODIFICATO: ora restituisce 3 valori
+) -> tuple[str | None, str | None, list[str] | None]:
     """
     Esegue la recruitment suite usando JD e testo del CV.
-    Ritorna: (testo_qualitativo, grafico_categorie_base64, grafico_competenze_base64)
+    Ritorna: (testo_qualitativo, grafico_categorie_base64, lista_delle_skill_piu_comuni)
     """
     
     # --- 1. Screening massivo per generare i dati di mercato e i grafici ---
@@ -45,7 +45,7 @@ def run_market_benchmark_from_text(
 
     market_df = None
     chart_cat_base64 = None
-    chart_skills_base64 = None
+    market_skills_list  = None
 
     if llm_analysis:
         promossi_llm = [p for p in llm_analysis if not p.get('scartato')]
@@ -55,7 +55,7 @@ def run_market_benchmark_from_text(
             final_dossiers = create_dossiers_for_promoted(promoted_ids, candidates_data_full, skill_fetcher)
             if final_dossiers:
                 # --- MODIFICA CHIAVE: Cattura i 3 valori restituiti ---
-                market_df, chart_cat_base64, chart_skills_base64 = visualize_results(final_dossiers)
+                market_df, chart_cat_base64, market_skills_list  = visualize_results(final_dossiers)
     
     # La logica che usa chart_path è stata rimossa, non serve più.
 
@@ -90,4 +90,4 @@ def run_market_benchmark_from_text(
 )
 
     # --- 5. Restituzione dei risultati pronti per MongoDB ---
-    return qualitative_text, chart_cat_base64, chart_skills_base64
+    return qualitative_text, chart_cat_base64, market_skills_list 

@@ -32,7 +32,7 @@ def create_feedback_pdf(report_content: FinalReportContent, output_path: str, **
 
     story = []
 
-    # --- Sezioni 1-4: Contenuto Principale (DA REINSERIRE) ---
+    # --- Sezioni 1-4: Contenuto Principale ---
     fixed_intro = "Il report di seguito, e le analisi che in esso sono sintetizzate, si basano sul contenuto del materiale di candidatura unito all'analisi della risoluzione del Case, effettuata durante apposito colloquio virtuale."
     story.append(Paragraph(fixed_intro, styles['Italic']))
     story.append(Spacer(1, 0.5*inch))
@@ -66,29 +66,27 @@ def create_feedback_pdf(report_content: FinalReportContent, output_path: str, **
             story.append(Paragraph(f"<b>Obiettivo:</b> {course.justification}", body_style))
             story.append(Paragraph(f"<i>Livello: {course.level} | Durata: ~{course.duration_hours} ore | <a href='{course.url}' color='blue'><u>Vai al corso</u></a></i>", body_style))
 
-    # --- Sezione 5: Benchmark di Mercato (Logica Corretta) ---
+    # --- Sezione 5: Benchmark di Mercato ---
     story.append(Paragraph("Benchmark di Mercato", h1_style))
     
+    # Recupera i dati passati come keyword arguments
     benchmark_text_raw = kwargs.get("market_benchmark_text") or ""
     chart_cat_base64 = kwargs.get("market_chart_categories_base64")
-    chart_skills_base64 = kwargs.get("market_chart_skills_base64")
+    market_skills_list = kwargs.get("market_skills_list")
     
     if benchmark_text_raw:
         cleaned_text = benchmark_text_raw.replace('**', '')
-        parts = re.split(r'(###\s*.*)', cleaned_text) # Pattern migliorato
+        parts = re.split(r'(###\s*.*)', cleaned_text)
 
         for part in parts:
             part = part.strip()
             if not part: continue
 
-            # --- LA CORREZIONE CHIAVE È QUI ---
             if part.startswith('###'):
-                # È un titolo. Pulisci il marcatore, applica lo stile e vai a capo.
                 title_text = part.replace('###', '').strip()
-                story.append(Paragraph(title_text, course_title_style)) # Stile richiesto
-                story.append(Spacer(1, 0.1 * inch)) # A capo
+                story.append(Paragraph(title_text, course_title_style))
+                story.append(Spacer(1, 0.1 * inch))
             else:
-                # È un paragrafo di testo normale.
                 body_text = part.replace('\n', '<br/>')
                 story.append(Paragraph(body_text, body_style))
     else:
@@ -106,9 +104,22 @@ def create_feedback_pdf(report_content: FinalReportContent, output_path: str, **
         except Exception as e:
             print(f"Avviso: impossibile inserire il grafico da Base64: {e}")
 
-    # Aggiungi i grafici se presenti
+    # Aggiunta della casella di testo richiesta prima della prima immagine
+    story.append(Spacer(1, 0.2 * inch))
+    story.append(Paragraph("Nella figura sottostante è riportata la percentuale delle occorrenze relative alle mansioni svolte da profili in linea con la posizione in esame.", body_style))
+
+    # Aggiungi il primo grafico (categorie) se presente
     add_image_from_base64(chart_cat_base64, story)
-    add_image_from_base64(chart_skills_base64, story)
+
+    # Aggiunge la frase e l'elenco di skill, invece del secondo grafico
+    if market_skills_list:
+        story.append(Spacer(1, 0.3 * inch)) # Spazio per separare dal contenuto precedente
+        intro_text = "Di seguito, infine, una lista di competenze più comuni derivanti dall'analisi di mercato per la posizione in esame:"
+        story.append(Paragraph(intro_text, body_style))
+        
+        # Unisce le skill in una stringa separata da virgola e la aggiunge al PDF
+        skills_as_text = ", ".join(market_skills_list)
+        story.append(Paragraph(skills_as_text, body_style))
 
     # --- Costruzione Finale del PDF ---
     try:
