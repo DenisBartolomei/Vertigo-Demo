@@ -1,0 +1,13 @@
+# File: requirements.txt
+
+pandas
+numpy
+sentence-transformers
+torch
+matplotlib
+openai
+python-dotenv
+pydantic
+PyMuPDF
+python-dateutil
+tqdm

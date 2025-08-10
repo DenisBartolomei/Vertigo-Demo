@@ -1,0 +1,697 @@
+[
+  {
+    "ID": 1,
+    "scartato": true,
+    "motivazione": "Esperienza in licensing, non in trade marketing o canale moderno."
+  },
+  {
+    "ID": 2,
+    "scartato": true,
+    "motivazione": "Ruolo junior, manca esperienza trade marketing e canale moderno."
+  },
+  {
+    "ID": 3,
+    "scartato": true,
+    "motivazione": "Esperienza brand, non trade marketing o gestione canale moderno."
+  },
+  {
+    "ID": 4,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing o canale moderno."
+  },
+  {
+    "ID": 5,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing o canale moderno."
+  },
+  {
+    "ID": 6,
+    "scartato": true,
+    "motivazione": "Ruolo junior, non emerge esperienza trade marketing."
+  },
+  {
+    "ID": 7,
+    "scartato": true,
+    "motivazione": "Ruolo grafico, non trade marketing o canale moderno."
+  },
+  {
+    "ID": 8,
+    "scartato": true,
+    "motivazione": "Esperienza retail brand, non trade marketing specialist."
+  },
+  {
+    "ID": 9,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing."
+  },
+  {
+    "ID": 10,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing specialist."
+  },
+  {
+    "ID": 11,
+    "scartato": true,
+    "motivazione": "Ruolo back office, non trade marketing specialist."
+  },
+  {
+    "ID": 12,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing specialist."
+  },
+  {
+    "ID": 14,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing specialist."
+  },
+  {
+    "ID": 15,
+    "scartato": true,
+    "motivazione": "Ruolo senior, esperienza brand management, non trade marketing."
+  },
+  {
+    "ID": 16,
+    "scartato": true,
+    "motivazione": "Esperienza junior brand management, non trade marketing."
+  },
+  {
+    "ID": 17,
+    "scartato": true,
+    "motivazione": "Esperienza junior brand management, non trade marketing."
+  },
+  {
+    "ID": 18,
+    "scartato": true,
+    "motivazione": "Esperienza sales, non trade marketing specialist."
+  },
+  {
+    "ID": 19,
+    "scartato": true,
+    "motivazione": "Esperienza global brand management, non trade marketing."
+  },
+  {
+    "ID": 20,
+    "scartato": true,
+    "motivazione": "Esperienza marketing manager, non trade marketing specialist."
+  },
+  {
+    "ID": 21,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing specialist."
+  },
+  {
+    "ID": 22,
+    "scartato": true,
+    "motivazione": "Esperienza global brand management, non trade marketing."
+  },
+  {
+    "ID": 23,
+    "scartato": true,
+    "motivazione": "Esperienza global brand management, non trade marketing."
+  },
+  {
+    "ID": 24,
+    "scartato": true,
+    "motivazione": "Esperienza junior brand management, non trade marketing."
+  },
+  {
+    "ID": 25,
+    "scartato": true,
+    "motivazione": "Esperienza junior brand management, non trade marketing."
+  },
+  {
+    "ID": 26,
+    "scartato": true,
+    "motivazione": "Esperienza brand management, non trade marketing specialist."
+  },
+  {
+    "ID": 28,
+    "scartato": true,
+    "motivazione": "Esperienza brand management automotive, non trade marketing."
+  },
+  {
+    "ID": 29,
+    "scartato": true,
+    "motivazione": "Esperienza global brand management, non trade marketing."
+  },
+  {
+    "ID": 30,
+    "scartato": true,
+    "motivazione": "Esperienza junior brand management, non trade marketing."
+  },
+  {
+    "ID": 31,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 32,
+    "scartato": true,
+    "motivazione": "Esperienza digital advertising, non trade marketing specialist."
+  },
+  {
+    "ID": 33,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 34,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 35,
+    "scartato": true,
+    "motivazione": "Esperienza customer care, non trade marketing specialist."
+  },
+  {
+    "ID": 36,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 37,
+    "scartato": true,
+    "motivazione": "Esperienza customer care, non trade marketing specialist."
+  },
+  {
+    "ID": 38,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 39,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 40,
+    "scartato": false,
+    "motivazione": "Esperienza diretta in trade marketing, gestione campagne promozionali, analisi sell-out."
+  },
+  {
+    "ID": 41,
+    "scartato": false,
+    "motivazione": "Esperienza diretta in trade marketing, gestione campagne promozionali, analisi sell-out."
+  },
+  {
+    "ID": 42,
+    "scartato": false,
+    "motivazione": "Esperienza diretta in trade marketing, gestione campagne promozionali, analisi sell-out."
+  },
+  {
+    "ID": 43,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 44,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 45,
+    "scartato": false,
+    "motivazione": "Esperienza diretta in trade marketing, gestione campagne promozionali, analisi sell-out."
+  },
+  {
+    "ID": 46,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 47,
+    "scartato": true,
+    "motivazione": "Esperienza content management, non trade marketing specialist."
+  },
+  {
+    "ID": 48,
+    "scartato": true,
+    "motivazione": "Esperienza content management, non trade marketing specialist."
+  },
+  {
+    "ID": 49,
+    "scartato": false,
+    "motivazione": "Esperienza digital marketing con focus su promozioni e analisi dati, parzialmente rilevante."
+  },
+  {
+    "ID": 50,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 51,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 52,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 53,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 54,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 55,
+    "scartato": true,
+    "motivazione": "Esperienza digital marketing, non trade marketing specialist."
+  },
+  {
+    "ID": 57,
+    "scartato": true,
+    "motivazione": "Esperienza business development, non trade marketing specialist."
+  },
+  {
+    "ID": 58,
+    "scartato": true,
+    "motivazione": "Esperienza project management, non trade marketing specialist."
+  },
+  {
+    "ID": 59,
+    "scartato": true,
+    "motivazione": "Esperienza consulenza ESG, non trade marketing specialist."
+  },
+  {
+    "ID": 60,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 61,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 62,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 63,
+    "scartato": true,
+    "motivazione": "Esperienza product owner IT, non trade marketing."
+  },
+  {
+    "ID": 64,
+    "scartato": true,
+    "motivazione": "Esperienza team leader IT, non trade marketing."
+  },
+  {
+    "ID": 65,
+    "scartato": true,
+    "motivazione": "Esperienza project management IT, non trade marketing."
+  },
+  {
+    "ID": 66,
+    "scartato": true,
+    "motivazione": "Esperienza business analyst IT, non trade marketing."
+  },
+  {
+    "ID": 67,
+    "scartato": true,
+    "motivazione": "Esperienza product management medicale, non trade marketing."
+  },
+  {
+    "ID": 68,
+    "scartato": true,
+    "motivazione": "Esperienza product management industriale, non trade marketing."
+  },
+  {
+    "ID": 69,
+    "scartato": true,
+    "motivazione": "Esperienza product management B2C, non trade marketing."
+  },
+  {
+    "ID": 70,
+    "scartato": true,
+    "motivazione": "Esperienza business management, non trade marketing specialist."
+  },
+  {
+    "ID": 71,
+    "scartato": true,
+    "motivazione": "Esperienza business management, non trade marketing specialist."
+  },
+  {
+    "ID": 72,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 73,
+    "scartato": true,
+    "motivazione": "Esperienza product management creativo, non trade marketing."
+  },
+  {
+    "ID": 74,
+    "scartato": true,
+    "motivazione": "Esperienza product management cleaning, non trade marketing."
+  },
+  {
+    "ID": 75,
+    "scartato": true,
+    "motivazione": "Esperienza product management moda, non trade marketing."
+  },
+  {
+    "ID": 76,
+    "scartato": true,
+    "motivazione": "Esperienza product management toys, non trade marketing."
+  },
+  {
+    "ID": 77,
+    "scartato": true,
+    "motivazione": "Esperienza product management B2C, non trade marketing."
+  },
+  {
+    "ID": 78,
+    "scartato": true,
+    "motivazione": "Esperienza product management hardware, non trade marketing."
+  },
+  {
+    "ID": 79,
+    "scartato": true,
+    "motivazione": "Esperienza buyer, non trade marketing specialist."
+  },
+  {
+    "ID": 80,
+    "scartato": true,
+    "motivazione": "Esperienza product management toys, non trade marketing."
+  },
+  {
+    "ID": 81,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 82,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 83,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 84,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 85,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 86,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 87,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 88,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 89,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 90,
+    "scartato": true,
+    "motivazione": "Esperienza product management telecomunicazioni, non trade marketing."
+  },
+  {
+    "ID": 91,
+    "scartato": true,
+    "motivazione": "Esperienza product management videosorveglianza, non trade marketing."
+  },
+  {
+    "ID": 92,
+    "scartato": true,
+    "motivazione": "Esperienza product management moda, non trade marketing."
+  },
+  {
+    "ID": 93,
+    "scartato": true,
+    "motivazione": "Esperienza product management digitale, non trade marketing."
+  },
+  {
+    "ID": 94,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 95,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 96,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 97,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 98,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 99,
+    "scartato": true,
+    "motivazione": "Esperienza strategy analyst, non trade marketing specialist."
+  },
+  {
+    "ID": 100,
+    "scartato": true,
+    "motivazione": "Esperienza global route to market, non trade marketing specialist."
+  },
+  {
+    "ID": 177,
+    "scartato": true,
+    "motivazione": "Esperienza strategica, manca focus su trade marketing e canale moderno."
+  },
+  {
+    "ID": 178,
+    "scartato": true,
+    "motivazione": "Ruolo alto livello, non specifico su trade marketing operativo richiesto."
+  },
+  {
+    "ID": 179,
+    "scartato": true,
+    "motivazione": "Esperienza strategica e prodotto, non trade marketing operativo."
+  },
+  {
+    "ID": 180,
+    "scartato": true,
+    "motivazione": "Ruolo strategico, manca esperienza trade marketing e canale moderno."
+  },
+  {
+    "ID": 182,
+    "scartato": true,
+    "motivazione": "Consulenza strategica, nessuna esperienza trade marketing o GDO."
+  },
+  {
+    "ID": 183,
+    "scartato": true,
+    "motivazione": "Esperienza project management, non trade marketing o GDO."
+  },
+  {
+    "ID": 184,
+    "scartato": true,
+    "motivazione": "Analisi retention, non esperienza trade marketing o canale moderno."
+  },
+  {
+    "ID": 185,
+    "scartato": true,
+    "motivazione": "Analisi customer strategy, non trade marketing o GDO."
+  },
+  {
+    "ID": 187,
+    "scartato": true,
+    "motivazione": "Analisi finanziaria, nessuna esperienza trade marketing o GDO."
+  },
+  {
+    "ID": 188,
+    "scartato": true,
+    "motivazione": "Analisi finanziaria, non esperienza trade marketing o canale moderno."
+  },
+  {
+    "ID": 189,
+    "scartato": true,
+    "motivazione": "Digital strategy, non esperienza trade marketing o GDO."
+  },
+  {
+    "ID": 190,
+    "scartato": false,
+    "motivazione": "Esperienza sales analysis, competenze analitiche utili, ma manca trade marketing diretto."
+  },
+  {
+    "ID": 191,
+    "scartato": true,
+    "motivazione": "Analisi finanziaria, non esperienza trade marketing o GDO."
+  },
+  {
+    "ID": 193,
+    "scartato": true,
+    "motivazione": "Ruolo strategico, non esperienza trade marketing operativo."
+  },
+  {
+    "ID": 194,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata alla posizione."
+  },
+  {
+    "ID": 195,
+    "scartato": false,
+    "motivazione": "Junior trade marketing, esperienza coerente con la posizione."
+  },
+  {
+    "ID": 196,
+    "scartato": true,
+    "motivazione": "Marketing digitale, non trade marketing o GDO."
+  },
+  {
+    "ID": 197,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata alla posizione."
+  },
+  {
+    "ID": 199,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata alla posizione."
+  },
+  {
+    "ID": 200,
+    "scartato": false,
+    "motivazione": "Consumer & trade marketing, esperienza coerente e completa."
+  },
+  {
+    "ID": 201,
+    "scartato": false,
+    "motivazione": "Senior trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 202,
+    "scartato": false,
+    "motivazione": "Brand image & trade marketing, esperienza coerente."
+  },
+  {
+    "ID": 203,
+    "scartato": false,
+    "motivazione": "Senior trade marketing, esperienza canale tradizionale e GDO."
+  },
+  {
+    "ID": 204,
+    "scartato": false,
+    "motivazione": "Senior trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 206,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 207,
+    "scartato": false,
+    "motivazione": "Shopper & trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 208,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 209,
+    "scartato": false,
+    "motivazione": "Junior trade marketing specialist, esperienza coerente."
+  },
+  {
+    "ID": 210,
+    "scartato": true,
+    "motivazione": "Head of product, esperienza troppo strategica e digitale."
+  },
+  {
+    "ID": 211,
+    "scartato": false,
+    "motivazione": "Product & trade marketing specialist, esperienza coerente."
+  },
+  {
+    "ID": 212,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 213,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 214,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist GDO, esperienza perfetta per la posizione."
+  },
+  {
+    "ID": 215,
+    "scartato": false,
+    "motivazione": "Field & trade marketing specialist, esperienza coerente e completa."
+  },
+  {
+    "ID": 216,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist eyewear, esperienza coerente."
+  },
+  {
+    "ID": 217,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 218,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 219,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 220,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 221,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 222,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  },
+  {
+    "ID": 223,
+    "scartato": false,
+    "motivazione": "Trade marketing specialist, esperienza perfettamente allineata."
+  }
+]

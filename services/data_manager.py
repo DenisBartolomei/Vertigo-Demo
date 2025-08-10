@@ -94,3 +94,35 @@ def save_pdf_report(pdf_bytes: bytes, session_id: str) -> str:
     except Exception as e:
         print(f"Errore nel salvataggio del PDF: {e}")
         return ""
+    
+@st.cache_data
+def get_available_positions_from_db():
+    """
+    Recupera l'elenco delle posizioni disponibili dal database.
+    Messo in cache da Streamlit per performance.
+    """
+    if db is None: 
+        print("DB non disponibile per get_available_positions_from_db")
+        return []
+    try:
+        collection = db["positions_data"]
+        # Recupera solo i campi necessari e ordina per nome
+        positions = list(collection.find({}, {"_id": 1, "position_name": 1}))
+        return sorted(positions, key=lambda p: p['position_name'])
+    except Exception as e:
+        print(f"Errore nel recupero delle posizioni dal DB: {e}")
+        return []
+
+def get_single_position_data_from_db(_position_id: str):
+    """
+    Recupera i dati completi per una singola posizione dato il suo ID.
+    """
+    if db is None: 
+        print(f"DB non disponibile per get_single_position_data_from_db per ID: {_position_id}")
+        return None
+    try:
+        collection = db["positions_data"]
+        return collection.find_one({"_id": _position_id})
+    except Exception as e:
+        print(f"Errore nel recupero dei dati per la posizione {_position_id}: {e}")
+        return None

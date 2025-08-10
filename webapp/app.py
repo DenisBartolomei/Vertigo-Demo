@@ -68,29 +68,8 @@ if project_root not in sys.path:
 from interviewer.chatbot import SmartCaseStudyChatbot
 from analyzer.run_analyzer import run_cv_analysis_pipeline
 from corrector.run_final_evaluation import execute_case_evaluation
-from feedback_generator.run_feedback_generator import run_feedback_pipeline
-from services.data_manager import db, create_new_session, save_stage_output, get_session_data
-
-# --- FUNZIONI HELPER (INVARIATO) ---
-@st.cache_data
-def get_available_positions_from_db():
-    if db is None: return []
-    try:
-        collection = db["positions_data"]
-        positions = list(collection.find({}, {"_id": 1, "position_name": 1}))
-        return sorted(positions, key=lambda p: p['position_name'])
-    except Exception as e:
-        st.error(f"Errore nel recupero delle posizioni dal DB: {e}")
-        return []
-
-def get_single_position_data_from_db(_position_id: str):
-    if db is None: return None
-    try:
-        collection = db["positions_data"]
-        return collection.find_one({"_id": _position_id})
-    except Exception as e:
-        print(f"Errore nel recupero dei dati per la posizione {_position_id}: {e}")
-        return None
+# RIGA MODIFICATA
+from services.data_manager import db, create_new_session, save_stage_output, get_session_data, get_available_positions_from_db, get_single_position_data_from_db
 
 # --- INIZIO MODIFICA FONDAMENTALE ---
 # Questa funzione è stata riscritta per assemblare correttamente i dati prima di creare il chatbot.
@@ -283,22 +262,28 @@ elif st.session_state.page == "feedback_processing":
     st.header("Analisi della Performance e Generazione Report")
     st.markdown("I nostri agenti AI stanno analizzando la tua performance nel colloquio per preparare il tuo report di feedback personalizzato.")
 
-    if "feedback_generated" not in st.session_state:
+    # Aggiungiamo un flag più specifico per la pipeline
+    if "feedback_pipeline_complete" not in st.session_state: 
         with st.spinner("Fase 1/2: Valutazione della performance..."):
             eval_success = execute_case_evaluation(session_id=st.session_state.session_id)
+        
         if eval_success:
             st.success("Valutazione della performance completata.")
             with st.spinner("Fase 2/2: Creazione del report di feedback personalizzato..."):
+                from feedback_generator.run_feedback_generator import run_feedback_pipeline
                 pdf_path = run_feedback_pipeline(session_id=st.session_state.session_id)
+            
             if pdf_path:
                 st.session_state.feedback_pdf_path = pdf_path
+                st.session_state.feedback_pipeline_complete = True # <-- IMPOSTA IL FLAG QUI
                 st.session_state.page = "feedback_display"
-                st.session_state.feedback_generated = True
                 st.rerun() 
             else:
                 st.error("Errore durante la creazione del report PDF.")
+                st.session_state.feedback_pipeline_complete = True # Imposta il flag anche in caso di errore per non riprovare
         else:
             st.error("Errore durante la valutazione della performance.")
+            st.session_state.feedback_pipeline_complete = True # Imposta il flag anche in caso di errore
             if st.button("Torna alla configurazione"):
                 st.session_state.clear()
                 st.session_state.page = "configurazione"

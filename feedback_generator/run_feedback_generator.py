@@ -6,18 +6,18 @@ from bson import ObjectId
 # Logica per aggiungere la root al path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Import dei moduli necessari
-from services.data_manager import get_session_data, save_stage_output, save_pdf_report
+# Import dei moduli necessari (tutti DOPO l'append)
+from services.data_manager import get_session_data, save_stage_output, save_pdf_report, db
 from .report_consolidator.consolidator import create_consolidated_report
 from .gap_analyzer.gap_identifier import identify_skill_gaps
 from .course_retriever.prompts_retriever import create_query_refinement_prompt
-# --- INIZIO MODIFICHE ---
-# La firma della funzione importata è cambiata, ma l'import rimane lo stesso.
 from .pathway_architect.architect import create_final_feedback_content
-# --- FINE MODIFICHE ---
 from .pathway_architect.pdf_service import create_feedback_pdf
 from interviewer.llm_service import get_llm_response
 from .course_retriever.rag_service import get_rag_service
+
+# IMPORTA QUI (DOPO il sys.path.append)
+from .market_integration import run_market_benchmark_from_text
 
 class MongoJSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -81,8 +81,55 @@ def run_feedback_pipeline(session_id: str) -> str | None:
     )
     save_stage_output(session_id, "gaps_with_courses", json.loads(enriched_gaps_content_str))
 
+    # --- STEP 4A: Benchmark di mercato (recruitment suite, no-file) ---
+    print("\n[STEP 4A] Benchmark di mercato (recruitment suite, no-file)...")
+
+    # Inizializza le variabili a None per gestire i casi in cui il benchmark non viene eseguito
+    qualitative_text = None
+    chart_cat_b64 = None
+    chart_skills_b64 = None
+
+    # La logica per ottenere i dati dal DB rimane la stessa
+    jd_text = ""
+    role_title = target_role
+    cv_text_for_market = stages_data.get("uploaded_cv_text")
+
+    try:
+        if db is None:
+            raise ConnectionError("Connessione a MongoDB non disponibile.")
+        positions_collection = db["positions_data"]
+        pos_doc = positions_collection.find_one({"_id": target_role}, {"job_description": 1, "position_name": 1})
+        if pos_doc:
+            jd_text = pos_doc.get("job_description", "") or ""
+            role_title = pos_doc.get("position_name", role_title) or role_title
+    except Exception as e:
+        print(f"Avviso: impossibile recuperare la JD o il titolo dal DB per il benchmark: {e}")
+
+    # Esegui il benchmark solo se hai i dati necessari
+    if jd_text and cv_text_for_market:
+        # Cattura i 3 valori restituiti dalla funzione
+        qualitative_text, chart_cat_b64, chart_skills_b64 = run_market_benchmark_from_text(
+            job_description_text=jd_text,
+            cv_text=cv_text_for_market,
+            offer_title=role_title
+        )
+        # Salva i risultati nella sessione per persistenza e debug
+        if qualitative_text:
+            save_stage_output(session_id, "market_benchmark_text", qualitative_text)
+        if chart_cat_b64:
+            save_stage_output(session_id, "market_chart_categories_base64", chart_cat_b64)
+        if chart_skills_b64:
+            save_stage_output(session_id, "market_chart_skills_base64", chart_skills_b64)
+    else:
+        print("Avviso: JD o testo CV non disponibili; benchmark di mercato saltato.")
+
+# Ora le variabili qualitative_text, chart_cat_b64, e chart_skills_b64
+# sono pronte per essere usate più avanti, nella chiamata a create_feedback_pdf
+    # ---
+
     # --- INIZIO MODIFICHE ---
     # STEP 4: Creazione Contenuto Report. Ora passiamo i report originali e separati.
+    # STEP 4: Creazione contenuto report PDF (già presente nel file)
     print("\n[STEP 4/5] Creazione contenuto report PDF (nuova struttura)...")
     final_report_content = create_final_feedback_content(
         cv_analysis_report=original_cv_report,
@@ -92,13 +139,27 @@ def run_feedback_pipeline(session_id: str) -> str | None:
         target_role=target_role
     )
     if not final_report_content: return None
+
+    # Sovrascrivi il placeholder del benchmark se abbiamo un testo reale
+    if qualitative_text:
+        try:
+            final_report_content.market_benchmark = qualitative_text
+        except Exception:
+            pass
     
     # STEP 5: Generazione PDF. La chiamata è la stessa, ma il contenuto è diverso.
     print("\n[STEP 5/5] Generazione del file PDF...")
     temp_dir = "temp_pdf"
     os.makedirs(temp_dir, exist_ok=True)
     temp_pdf_path = os.path.join(temp_dir, f"{session_id}.pdf")
-    create_feedback_pdf(final_report_content, temp_pdf_path)
+    create_feedback_pdf(
+        report_content=final_report_content,
+        output_path=temp_pdf_path,
+        # Passiamo solo i dati che esistono e che la funzione si aspetta
+        market_benchmark_text=qualitative_text,
+        market_chart_categories_base64=chart_cat_b64,
+        market_chart_skills_base64=chart_skills_b64
+    )
     
     pdf_path = ""
     if os.path.exists(temp_pdf_path):

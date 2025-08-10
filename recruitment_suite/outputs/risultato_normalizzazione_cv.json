@@ -1,0 +1,25 @@
+[
+  {
+    "profile_id": "MatteoRosellini_CV",
+    "normalized_experiences": [
+      {
+        "original_title": "CFD Engineer",
+        "duration_months": 48,
+        "esco_matches": [
+          {
+            "esco_title": "collaudatore di motori di aerei/collaudatrice di motori di aerei",
+            "similarity": "0.7431"
+          },
+          {
+            "esco_title": "ingegnere aerodinamico",
+            "similarity": "0.7202"
+          },
+          {
+            "esco_title": "collaudatore di motori di veicoli/collaudatrice di motori di veicoli",
+            "similarity": "0.6885"
+          }
+        ]
+      }
+    ]
+  }
+]
