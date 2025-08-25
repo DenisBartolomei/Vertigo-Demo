@@ -14,7 +14,6 @@ from .course_retriever.prompts_retriever import create_query_refinement_prompt
 from .pathway_architect.architect import create_final_feedback_content
 from .pathway_architect.pdf_service import create_feedback_pdf
 from interviewer.llm_service import get_llm_response
-from .course_retriever.rag_service import get_rag_service
 
 # IMPORTA QUI (DOPO il sys.path.append)
 from .market_integration import run_market_benchmark_from_text
@@ -61,6 +60,7 @@ def run_feedback_pipeline(session_id: str) -> str | None:
 
     # STEP 3: Recupero Corsi. Invariato.
     print("\n[STEP 3/5] Recupero corsi...")
+    from .course_retriever.rag_service import get_rag_service
     rag_service = get_rag_service()
     
     enriched_skill_families = []
