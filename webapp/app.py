@@ -79,29 +79,29 @@ def initialize_chatbot_for_position(position_id: str):
     con i loro "accomplishment_criteria" corrispondenti.
     """
     print(f"--- [INIT CHATBOT] Inizializzazione per posizione: {position_id}. ---")
-    
+
     # 1. Recupera tutti i dati della posizione
     position_data = get_single_position_data_from_db(position_id)
     if not position_data:
         st.error(f"Dati non trovati nel DB per la posizione '{position_id}'")
         return None, None, None
-    
+
     all_cases_data = position_data.get("all_cases", {})
     all_criteria_data = position_data.get("all_criteria", {})
-    
+
     # 2. Seleziona casualmente un caso di studio
     cases_list = all_cases_data.get("cases", [])
     if not cases_list:
         st.error(f"Nessun caso di studio trovato per la posizione '{position_id}'.")
         return None, None, None
-    
+
     selected_case = random.choice(cases_list)
     selected_case_id = selected_case.get("question_id")
-    
+
     if not selected_case_id:
         st.error("Errore critico: Il caso di studio selezionato non ha un 'question_id'.")
         return None, None, None
-        
+
     print(f"--- [INIT CHATBOT] Caso selezionato casualmente: {selected_case_id} ---")
 
     # 3. Trova il set di criteri corrispondente al caso selezionato
@@ -112,15 +112,15 @@ def initialize_chatbot_for_position(position_id: str):
     if not selected_criteria_set:
         st.error(f"Errore critico: Criteri di valutazione non trovati per il caso ID '{selected_case_id}'.")
         return None, None, None
-        
+
     # 4. **OPERAZIONE CHIAVE: UNIONE DEI DATI**
     # Creiamo un dizionario di 'steps' (chiave=id) per un accesso rapido.
     steps_dict = {step['id']: step for step in selected_case['reasoning_steps']}
-    
+
     # Ora scorriamo i criteri e li "iniettiamo" nello step corretto.
     for criterion in selected_criteria_set.get('accomplishment_criteria', []):
         step_id_to_update = criterion.get('step_id')
-        
+
         if step_id_to_update in steps_dict:
             # Aggiungiamo il campo 'criteria' all'oggetto dello step.
             steps_dict[step_id_to_update]['criteria'] = criterion.get('criteria')
@@ -133,25 +133,60 @@ def initialize_chatbot_for_position(position_id: str):
         case_text=selected_case['question_text'], 
         case_id=selected_case_id
     )
-    
+
     seniority = position_data.get("seniority_level", "Mid-Level")
-    
+
     print("--- [INIT CHATBOT] Chatbot inizializzato con dati completi. ---")
     return chatbot_instance, selected_case_id, seniority
 # --- FINE MODIFICA FONDAMENTALE ---
 
-# --- App Streamlit (INVARIATO) ---
+# --- Nuova pagina introduttiva (INSERITA) ---
+def render_intro_page():
+    st.title("Vertigo AI – Demo di Valutazione")
+    st.markdown("Trasformiamo il modo in cui i candidati dimostrano le proprie competenze.")
+    st.divider()
+
+    # Sezione di apertura ad alto impatto
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.subheader("Cos'è questa demo?")
+        st.markdown(
+            "- È una versione volutamente semplice, sia nell'estetica che nelle funzionalità. Serve a mostrarti l'essenza del nostro approccio senza fronzoli.\n"
+            "- Il nostro obiettivo è dare a chiunque la possibilità di dimostrare le proprie competenze tecniche, a prescindere dal CV. Massima trasparenza: riceverai un report che spiega la compatibilità con la posizione e un percorso di upskilling con corsi web per migliorarti."
+        )
+    with col2:
+        st.info("Suggerimento: prova la demo in pochi minuti. Il focus è sull’esperienza e sul risultato finale, non sull’interfaccia.")
+
+    st.markdown(" ")
+    st.subheader("Come funziona in 3 step")
+    st.markdown(
+        "1) Seleziona una posizione tra i nostri esempi e carica il tuo CV (PDF o TXT).\n"
+        "2) Sostieni un colloquio con il nostro chatbot: eroga un Case Study a step guidati. Ti consigliamo di fare un paio di interazioni per capirne il funzionamento e poi procedere rapidamente: puoi usare anche ChatGPT o Gemini, oppure rispondere in modo sintetico. Non vogliamo farti perdere tempo.\n"
+        "3) Concluso il colloquio, clicca il pulsante in fondo alla pagina per generare il tuo report. Potrai scaricarlo e leggerlo."
+    )
+
+    st.warning("Beta Disclaimer: questa è una versione in anteprima. Non avendo grandi budget, ti chiediamo un po’ di pazienza per eventuali attese durante l’elaborazione.")
+
+    st.markdown(" ")
+    if st.button("Inizia la demo", type="primary", use_container_width=True):
+        st.session_state.page = "configurazione"
+        st.rerun()
+
+# --- App Streamlit (AGGIORNATA CON INTRO) ---
 st.set_page_config(page_title="Vertigo AI - Simulazione", layout="wide", initial_sidebar_state="collapsed")
 load_and_inject_css()
 add_review_badge()
 
 if "page" not in st.session_state:
     st.session_state.clear()
-    st.session_state.page = "configurazione"
+    st.session_state.page = "intro"  # Avvio sulla nuova pagina introduttiva
     st.session_state.messages = []
 
-# --- PAGINE DELL'APPLICAZIONE (Logica invariata, ma ora la chiamata a initialize_chatbot_for_position funziona correttamente) ---
-if st.session_state.page == "configurazione":
+# --- PAGINE DELL'APPLICAZIONE (Logica invariata, con intro e nuovi bottoni) ---
+if st.session_state.page == "intro":
+    render_intro_page()
+
+elif st.session_state.page == "configurazione":
     st.title("Benvenuto nella Simulazione di Vertigo AI")
     st.markdown("Inizia il tuo percorso caricando il tuo CV e scegliendo la posizione che vuoi simulare. Sosterrai un colloquio con il nostro agente AI per valutare le tue skill rispetto alle richieste dell'annuncio.")
     st.divider()
@@ -172,12 +207,18 @@ if st.session_state.page == "configurazione":
                 if position_details:
                     st.text_area("JD", position_details.get("job_description", "N/D"), height=200, label_visibility="collapsed")
     st.divider()
-    if uploaded_file and selected_position:
-        if st.button("Conferma e Avvia Preparazione", use_container_width=True, type="primary"):
-            st.session_state.uploaded_cv = uploaded_file
-            st.session_state.selected_position = selected_position
-            st.session_state.page = "preparazione"
+    cols = st.columns([1, 1])
+    with cols[0]:
+        if st.button("Torna all'Introduzione", use_container_width=True):
+            st.session_state.page = "intro"
             st.rerun()
+    with cols[1]:
+        if uploaded_file and selected_position:
+            if st.button("Conferma e Avvia Preparazione", use_container_width=True, type="primary"):
+                st.session_state.uploaded_cv = uploaded_file
+                st.session_state.selected_position = selected_position
+                st.session_state.page = "preparazione"
+                st.rerun()
 
 elif st.session_state.page == "preparazione":
     st.title("Preparazione della tua sessione in corso...")
@@ -240,15 +281,15 @@ elif st.session_state.page == "interview":
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
-            
+
             with st.chat_message("assistant"):
                 with st.spinner("Vertigo sta elaborando la tua risposta..."):
                     response = chatbot.process_user_response(prompt)
                     st.markdown(response)
-            
+
             st.session_state.messages.append({"role": "assistant", "content": response})
             st.rerun()
-    
+
     else:
         st.success("Colloquio completato!")
         st.info("La tua conversazione è stata salvata. Ora puoi procedere con la valutazione finale.")
@@ -266,13 +307,13 @@ elif st.session_state.page == "feedback_processing":
     if "feedback_pipeline_complete" not in st.session_state: 
         with st.spinner("Fase 1/2: Valutazione della performance..."):
             eval_success = execute_case_evaluation(session_id=st.session_state.session_id)
-        
+
         if eval_success:
             st.success("Valutazione della performance completata.")
             with st.spinner("Fase 2/2: Creazione del report di feedback personalizzato..."):
                 from feedback_generator.run_feedback_generator import run_feedback_pipeline
                 pdf_path = run_feedback_pipeline(session_id=st.session_state.session_id)
-            
+
             if pdf_path:
                 st.session_state.feedback_pdf_path = pdf_path
                 st.session_state.feedback_pipeline_complete = True # <-- IMPOSTA IL FLAG QUI
