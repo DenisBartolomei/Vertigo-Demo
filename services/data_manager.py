@@ -12,6 +12,7 @@ MONGO_URI = None
 try:
     # 1. Prova a leggere dai secrets di Streamlit
     MONGO_URI = st.secrets.get("MONGO_CONNECTION_STRING")
+    print("Letti i segreti di mongo")
 except Exception:
     # 2. Se st.secrets non è accessibile o non esiste, ignora l'errore
     pass
@@ -49,7 +50,26 @@ else:
         except Exception:
             pass
 
-# --- Funzioni di Gestione Dati (NESSUNA MODIFICA NECESSARIA QUI) ---
+# --- Funzioni di Gestione Dati ---
+
+def create_or_update_position(position_id: str, payload: dict) -> bool:
+    """
+    Crea o aggiorna una posizione nella collection 'positions_data'.
+    Usa upsert=True per inserire se non esiste ancora.
+    """
+    if db is None:
+        print("DB non disponibile per create_or_update_position")
+        return False
+    try:
+        collection = db["positions_data"]
+        payload = payload.copy()
+        payload["_id"] = position_id
+        collection.update_one({"_id": position_id}, {"$set": payload}, upsert=True)
+        print(f"📄 Posizione upserted su MongoDB con ID: {position_id}")
+        return True
+    except Exception as e:
+        print(f"Errore durante l'upsert della posizione {position_id}: {e}")
+        return False
 
 def create_new_session(session_id: str, position_id: str, candidate_name: str = "Candidato Anonimo") -> bool:
     if sessions_collection is None: return False
@@ -80,9 +100,6 @@ def get_session_data(session_id: str) -> dict | None:
         return None
 
 def save_pdf_report(pdf_bytes: bytes, session_id: str) -> str:
-    # Questa funzione scrive sul filesystem locale/temporaneo, il che è accettabile
-    # per file che vengono poi salvati altrove o serviti per il download.
-    # Non necessita di modifiche per la logica dei segreti.
     output_dir = os.path.join("data", "sessions", session_id)
     os.makedirs(output_dir, exist_ok=True)
     file_path = os.path.join(output_dir, "Report_Feedback_Candidato.pdf")
@@ -94,19 +111,14 @@ def save_pdf_report(pdf_bytes: bytes, session_id: str) -> str:
     except Exception as e:
         print(f"Errore nel salvataggio del PDF: {e}")
         return ""
-    
+
 @st.cache_data
 def get_available_positions_from_db():
-    """
-    Recupera l'elenco delle posizioni disponibili dal database.
-    Messo in cache da Streamlit per performance.
-    """
     if db is None: 
         print("DB non disponibile per get_available_positions_from_db")
         return []
     try:
         collection = db["positions_data"]
-        # Recupera solo i campi necessari e ordina per nome
         positions = list(collection.find({}, {"_id": 1, "position_name": 1}))
         return sorted(positions, key=lambda p: p['position_name'])
     except Exception as e:
@@ -114,9 +126,6 @@ def get_available_positions_from_db():
         return []
 
 def get_single_position_data_from_db(_position_id: str):
-    """
-    Recupera i dati completi per una singola posizione dato il suo ID.
-    """
     if db is None: 
         print(f"DB non disponibile per get_single_position_data_from_db per ID: {_position_id}")
         return None

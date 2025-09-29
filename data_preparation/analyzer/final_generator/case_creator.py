@@ -4,16 +4,11 @@ from pydantic import BaseModel, Field
 from interviewer.llm_service import get_structured_llm_response
 from . import prompts_final
 
-# --- 1. Definizione dello Schema Dati con Pydantic ---
-# Questo definisce la struttura esatta del JSON che vogliamo ottenere.
-
 import json
 from typing import List, Optional
 from pydantic import BaseModel, Field
 from interviewer.llm_service import get_structured_llm_response
 from . import prompts_final
-
-# --- 1. Definizione dello Schema Dati AGGIORNATO con Pydantic ---
 
 class SkillToTest(BaseModel):
     skill_name: str = Field(description="Il nome della skill o competenza da verificare (es. 'Problem Solving', 'Python').")
@@ -23,29 +18,24 @@ class ReasoningStep(BaseModel):
     id: int = Field(description="ID numerico progressivo dello step, partendo da 0.")
     title: str = Field(description="Titolo breve e descrittivo dello step di ragionamento.")
     description: str = Field(description="Descrizione dettagliata dello step o domanda da porre al candidato.")
-    # vvv NUOVO CAMPO vvv
     skills_to_test: List[SkillToTest] = Field(description="Una lista di 1-3 skill che possono essere verificate in questo step.", max_items=3)
 
 class CaseStructure(BaseModel):
     question_id: str = Field(description="ID univoco per il caso, es. 'case-pm-01'.")
     question_title: str = Field(description="Titolo principale del caso di studio.")
     question_text: str = Field(description="Testo narrativo completo che introduce il problema e l'obiettivo del caso.")
-    # vvv MODIFICA vvv : la lista ora conterrà il nuovo tipo di ReasoningStep
     reasoning_steps: List[ReasoningStep] = Field(description="Lista di 4 reasoning steps (da 0 a 3) che decompongono la soluzione.")
 
 class CaseCollection(BaseModel):
-    """Il modello di primo livello che contiene la lista di tutti i casi generati."""
     cases: List[CaseStructure] = Field(description="Una lista contenente esattamente 5 casi di studio.")
-
-# --- 2. Logica di Generazione ---
 
 FINAL_MODEL = "gpt-4.1-2025-04-14"
 
-def generate_final_cases(icp_text: str, guide_text: str, kb_summary: str, seniority_level: str) -> CaseCollection | None:
+def generate_final_cases(icp_text: str, guide_text: str, kb_summary: str, seniority_level: str, hr_special_needs: str = "") -> CaseCollection | None:
     """
     Genera una collezione di 5 casi di studio strutturati in formato JSON.
+    Integra le Indicazioni HR nella generazione.
     """
-    # Creo un esempio JSON da passare al prompt
     example_skill = SkillToTest(skill_name="Esempio Skill", testing_method="Esempio metodo di test")
     example_step = {
         "id": 0, "title": "Titolo Esempio Step", "description": "Descrizione Esempio Step",
@@ -59,14 +49,12 @@ def generate_final_cases(icp_text: str, guide_text: str, kb_summary: str, senior
     json_example_str = json.dumps(example_collection, indent=2)
 
     print("1. Creazione del prompt finale con esempio JSON...")
-    # Passo l'esempio JSON al prompt
     final_prompt = prompts_final.create_final_case_prompt(
-        icp_text, guide_text, kb_summary, seniority_level, json_example_str
+        icp_text, guide_text, kb_summary, seniority_level, json_example_str, hr_special_needs
     )
 
     print(f"2. Invio della richiesta al modello '{FINAL_MODEL}' per la generazione strutturata...")
-    
-    # La funzione `get_structured_llm_response` prenderà il nuovo schema da CaseCollection.model_json_schema() e lo userà.
+
     tool_call_args = get_structured_llm_response(
         prompt=final_prompt,
         model=FINAL_MODEL,

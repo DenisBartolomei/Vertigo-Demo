@@ -25,11 +25,10 @@ Analizza i dati forniti per creare un report di feedback completo e personalizza
 **Struttura dell'output (deve essere un JSON):**
 - `candidate_name`: "{candidate_name}"
 - `target_role`: "{target_role}"
-- `profile_summary`: Profilo sintetico di 3-4 righe che fonde le impressioni da CV e colloquio.
-- `cv_analysis_outcome`: Paragrafo che sintetizza l'esito dell'analisi del solo CV.
-- `interview_outcome`: Paragrafo che sintetizza l'esito della performance nel solo colloquio, evidenziando cosa è stato confermato o smentito rispetto al CV.
+- `profile_summary`: Profilo sintetico di 2-3 righe che fonde le impressioni da CV e colloquio.
+- `cv_analysis_outcome`: Paragrafo che sintetizza l'esito dell'analisi del solo CV - 2-3 righe.
+- `interview_outcome`: Paragrafo che sintetizza l'esito della performance nel solo colloquio, evidenziando cosa è stato confermato o smentito rispetto al CV - 2-3 righe.
 - `suggested_pathway`: Lista ordinata e logica di corsi selezionati. Se nessun corso risulta pertinente, la lista deve essere vuota.
-- `market_benchmark`: Inserisci qui ESATTAMENTE questo testo: "Questa sezione è in fase di sviluppo e sarà presto disponibile. Fornirà un'analisi comparativa delle tue competenze rispetto alle attuali richieste del mercato del lavoro per ruoli simili."
 
 **Istruzioni per la Generazione:**
 
@@ -45,8 +44,6 @@ Analizza i dati forniti per creare un report di feedback completo e personalizza
     *   Ordina i corsi in modo sequenziale (es. Beginner prima di Advanced).
     *   Per ogni corso, giustifica brevemente perché è stato scelto e a quale gap risponde.
     *   Metti nel report ALMENO 3 corsi
-5.  **Per la sezione "market_benchmark":**
-    *   Usa il testo placeholder fornito sopra, senza alcuna modifica.
 
 **Formato di Output**
 Rispondi esclusivamente con un oggetto JSON che rispetti la struttura richiesta.

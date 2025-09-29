@@ -4,8 +4,6 @@ from pydantic import BaseModel, Field
 from interviewer.llm_service import get_structured_llm_response
 from . import prompts_eval_criteria
 
-# --- 1. Definizione dello Schema Dati con Pydantic ---
-
 class EvaluationCriterion(BaseModel):
     evaluation_criteria_1: str = Field(description="Primo criterio di valutazione per il requisito.")
     evaluation_criteria_2: str = Field(description="Secondo criterio di valutazione per il requisito.")
@@ -15,27 +13,23 @@ class RequirementEvaluation(BaseModel):
     criteria: EvaluationCriterion = Field(description="I due criteri di valutazione associati a questo requisito.")
 
 class EvaluationCriteriaCollection(BaseModel):
-    """Modello di primo livello che contiene la lista dei criteri per tutti i requisiti."""
     evaluation_schema: List[RequirementEvaluation] = Field(description="Una lista completa dei requisiti e dei loro criteri di valutazione.")
-
-# --- 2. Logica di Generazione ---
 
 GENERATION_MODEL = "gpt-4.1-2025-04-14"
 
-def generate_evaluation_criteria(icp_text: str, cases_json_str: str, seniority_level: str) -> EvaluationCriteriaCollection | None:
+def generate_evaluation_criteria(icp_text: str, cases_json_str: str, seniority_level: str, hr_special_needs: str = "") -> EvaluationCriteriaCollection | None:
     """
-    Genera i criteri di valutazione strutturati per i requisiti dell'ICP.
+    Genera i criteri di valutazione strutturati per i requisiti dell'ICP, integrando gli HR needs.
     """
-    # Creiamo un esempio dinamico dello schema JSON da includere nel prompt
     output_schema_example = EvaluationCriteriaCollection.model_json_schema()
 
     print("1. Creazione del prompt per la generazione dei criteri di valutazione...")
     prompt = prompts_eval_criteria.create_evaluation_criteria_prompt(
-        icp_text, cases_json_str, seniority_level, json.dumps(output_schema_example, indent=2)
+        icp_text, cases_json_str, seniority_level, json.dumps(output_schema_example, indent=2), hr_special_needs
     )
-    
+
     print(f"2. Invio della richiesta al modello '{GENERATION_MODEL}'...")
-    
+
     structured_response_str = get_structured_llm_response(
         prompt=prompt,
         model=GENERATION_MODEL,

@@ -1,12 +1,16 @@
 SYSTEM_PROMPT = """Sei un agente AI progettato per produrre informazioni strutturate, ricevendo in input informazioni non strutturate.
 Dati gli input, restituisci un oggetto JSON con i campi predefiniti nella struttura attesa. Formatta accuratamente i dati di output. Se un dato manca o non si può determinare, restituisci un valore di default (e.g., null, 0, or 'N/A')."""
 
-def create_evaluation_criteria_prompt(icp_text: str, cases_json_str: str, seniority_level: str, output_schema_example: str) -> str:
+def create_evaluation_criteria_prompt(icp_text: str, cases_json_str: str, seniority_level: str, output_schema_example: str, hr_special_needs: str) -> str:
     """
-    Assembla il prompt per generare i criteri di valutazione dei requisiti.
+    Prompt per generare i criteri di valutazione dei requisiti, integrando HR Needs.
     """
+    hr_block = hr_special_needs.strip() if hr_special_needs else "Nessuna indicazione speciale fornita."
     return f"""
-Sei un esperto di valutazione di test, immagina di far parte di una commissione che deve decidere le modalità per valutare determinate competenze e conoscenze, attraverso dei Cases erogati a candidati per una posizione lavorativa. L'obiettivo è fornire a futuri scrutinatori delle modalità oggettive e univoche per fare in modo che essi siano in grado di valutare il soddisfacimento di requisiti tecnici e non, richiesti da una posizione lavorativa. Tali requisiti da valutare, saranno da estrapolare dalle interazioni occorse durante la risoluzione di un Case costruito ad-hoc.
+Sei un esperto di valutazione. Devi creare 2 evaluation criteria per ciascun requisito (dalla ICP) osservabile in colloquio/case study.
+
+Indicazioni Speciali HR
+{hr_block}
 
 Dati:
 - ICP, che rappresenta una sintesi di come dovrebbe essere il candidato ideale per la posizione lavorativa per cui stiamo lavorando;
@@ -31,7 +35,8 @@ Istruzioni
 - Ricorda che il "reasoning_step_0" fa sempre riferimento allo step per impostare l'intera risoluzione del Case, mentre gli altri reasoning_steps sono la decomposizione della soluzione in problemi minori
 - Rispondi sempre con un JSON strutturato, come esemplificato nell'input "esempio_struttura_output"
 ---
-**INPUTS PER LA GENERAZIONE**
+
+Input alla generazione:
 
 [PROFILO CANDIDATO IDEALE (ICP)]
 {icp_text}

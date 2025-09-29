@@ -71,8 +71,8 @@ def create_feedback_pdf(report_content: FinalReportContent, output_path: str, **
     
     # Recupera i dati passati come keyword arguments
     benchmark_text_raw = kwargs.get("market_benchmark_text") or ""
-    chart_cat_base64 = kwargs.get("market_chart_categories_base64")
-    market_skills_list = kwargs.get("market_skills_list")
+    ##chart_cat_base64 = kwargs.get("market_chart_categories_base64")
+    ##market_skills_list = kwargs.get("market_skills_list")
     
     if benchmark_text_raw:
         cleaned_text = benchmark_text_raw.replace('**', '')
@@ -92,34 +92,34 @@ def create_feedback_pdf(report_content: FinalReportContent, output_path: str, **
     else:
         story.append(Paragraph("Dati di benchmark non disponibili.", body_style))
 
-    def add_image_from_base64(b64_string, story_list):
-        if not b64_string: return
-        try:
-            story_list.append(Spacer(1, 0.2 * inch))
-            image_data = base64.b64decode(b64_string)
-            image_stream = BytesIO(image_data)
-            img = Image(image_stream, width=6.0 * inch, height=4.0 * inch)
-            img.hAlign = 'CENTER'
-            story_list.append(img)
-        except Exception as e:
-            print(f"Avviso: impossibile inserire il grafico da Base64: {e}")
+    ##def add_image_from_base64(b64_string, story_list):
+    ##    if not b64_string: return
+    ##    try:
+    ##        story_list.append(Spacer(1, 0.2 * inch))
+    ##        image_data = base64.b64decode(b64_string)
+    ##        image_stream = BytesIO(image_data)
+    ##        img = Image(image_stream, width=6.0 * inch, height=4.0 * inch)
+    ##        img.hAlign = 'CENTER'
+    ##        story_list.append(img)
+    ##    except Exception as e:
+    ##        print(f"Avviso: impossibile inserire il grafico da Base64: {e}")
 
-    # Aggiunta della casella di testo richiesta prima della prima immagine
-    story.append(Spacer(1, 0.2 * inch))
-    story.append(Paragraph("Nella figura sottostante è riportata la percentuale delle occorrenze relative alle mansioni svolte da profili in linea con la posizione in esame.", body_style))
-
-    # Aggiungi il primo grafico (categorie) se presente
-    add_image_from_base64(chart_cat_base64, story)
-
-    # Aggiunge la frase e l'elenco di skill, invece del secondo grafico
-    if market_skills_list:
-        story.append(Spacer(1, 0.3 * inch)) # Spazio per separare dal contenuto precedente
-        intro_text = "Di seguito, infine, una lista di competenze più comuni derivanti dall'analisi di mercato per la posizione in esame:"
-        story.append(Paragraph(intro_text, body_style))
-        
-        # Unisce le skill in una stringa separata da virgola e la aggiunge al PDF
-        skills_as_text = ", ".join(market_skills_list)
-        story.append(Paragraph(skills_as_text, body_style))
+    ### Aggiunta della casella di testo richiesta prima della prima immagine
+    ##story.append(Spacer(1, 0.2 * inch))
+    ##story.append(Paragraph("Nella figura sottostante è riportata la percentuale delle occorrenze relative alle mansioni svolte da profili in linea con la posizione in esame.", body_style))
+    ##
+    ### Aggiungi il primo grafico (categorie) se presente
+    ##add_image_from_base64(chart_cat_base64, story)
+    ##
+    ### Aggiunge la frase e l'elenco di skill, invece del secondo grafico
+    ##if market_skills_list:
+    ##    story.append(Spacer(1, 0.3 * inch)) # Spazio per separare dal contenuto precedente
+    ##    intro_text = "Di seguito, infine, una lista di competenze più comuni derivanti dall'analisi di mercato per la posizione in esame:"
+    ##    story.append(Paragraph(intro_text, body_style))
+    ##    
+    ##    # Unisce le skill in una stringa separata da virgola e la aggiunge al PDF
+    ##    skills_as_text = ", ".join(market_skills_list)
+    ##    story.append(Paragraph(skills_as_text, body_style))
 
     # --- Costruzione Finale del PDF ---
     try:

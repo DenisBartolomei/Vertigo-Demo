@@ -1,3 +1,5 @@
+# interviewer/chatbot.py
+
 from .llm_service import get_llm_response
 from . import prompts
 import json
@@ -5,8 +7,8 @@ import os
 from datetime import datetime
 
 class SmartCaseStudyChatbot:
-    MAX_ATTEMPTS = 1
-    MAX_QUESTIONS = 3
+    MAX_ATTEMPTS = 5
+    MAX_QUESTIONS = 10
 
     # --- CONFIGURAZIONE DEI MODELLI ---
     INTERVIEWER_MODEL = "gpt-4.1-2025-04-14"
@@ -40,7 +42,13 @@ class SmartCaseStudyChatbot:
     def start_interview(self) -> str:
         self.current_step_id = 0
         step_zero_info = self.steps[self.current_step_id]
-        prompt = prompts.create_start_prompt(self.case_title, self.case_text, step_zero_info['description'])
+        skills_str = ", ".join([s.get('skill_name', '') for s in step_zero_info.get('skills_to_test', []) if s.get('skill_name')])
+        prompt = prompts.create_start_prompt(
+            self.case_title,
+            self.case_text,
+            step_zero_info.get('description', 'N/D'),
+            skills_str
+        )
         initial_message = get_llm_response(
             prompt=prompt, 
             model=self.INTERVIEWER_MODEL, 
@@ -65,13 +73,13 @@ class SmartCaseStudyChatbot:
         self.questions_asked_count += 1
         remaining_q = self.MAX_QUESTIONS - self.questions_asked_count
         current_step_info = self.steps[self.current_step_id]
-        prompt = prompts.create_answer_to_candidate_question_prompt(
+        answer_prompt = prompts.create_answer_to_candidate_question_prompt(
             case_text=self.case_text,
-            current_step_description=current_step_info['description'],
+            current_step_description=current_step_info.get('description', ''),
             user_question=user_question
         )
         answer = get_llm_response(
-            prompt=prompt,
+            prompt=answer_prompt,
             model=self.INTERVIEWER_MODEL,
             system_prompt=prompts.SYSTEM_PROMPT
         )
@@ -104,20 +112,19 @@ class SmartCaseStudyChatbot:
 
     def _evaluate_step_completion(self) -> bool:
         current_step = self.steps[self.current_step_id]
-        history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in self.conversation_history[-5:]])
-        
-        # --- INIZIO MODIFICA ---
-        # Creiamo un contesto ricco combinando il titolo e la descrizione dello step.
+        history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in self.conversation_history[-8:]])
+
+        # Contesto + Criterio + Skill da verificare
         step_full_context = f"Titolo: {current_step.get('title', 'N/D')}\nDescrizione: {current_step.get('description', 'N/D')}"
-        
-        # Passiamo il contesto completo e il criterio al prompt.
+        skills_str = ", ".join([s.get('skill_name', '') for s in current_step.get('skills_to_test', []) if s.get('skill_name')])
+
         prompt = prompts.create_evaluation_prompt(
             step_context=step_full_context,
-            criteria=current_step.get('criteria', 'Nessun criterio specifico fornito.'), # Usiamo .get() per sicurezza
+            criteria=current_step.get('criteria', 'Nessun criterio specifico fornito.'),
+            skills_to_test=skills_str,
             history_text=history_text
         )
-        # --- FINE MODIFICA ---
-        
+
         evaluation = get_llm_response(
             prompt=prompt, 
             model=self.INTERVIEWER_MODEL,
@@ -125,13 +132,17 @@ class SmartCaseStudyChatbot:
             temperature=0.2, 
             max_tokens=10
         )
-        return "True" in evaluation
-    
+        return "TRUE" in evaluation.upper()
+
     def _select_next_step(self) -> int | None:
         available_steps = [step for id, step in self.steps.items() if id not in self.completed_step_ids]
-        if not available_steps: return None
+        if not available_steps: 
+            return None
         history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in self.conversation_history])
-        options_text = "\n".join([f"ID: {s['id']}, Titolo: {s['title']}" for s in available_steps])
+        # Includi anche le skill per ogni step tra le opzioni
+        def _skills(step):
+            return ", ".join([s.get('skill_name', '') for s in step.get('skills_to_test', []) if s.get('skill_name')]) or "N/D"
+        options_text = "\n".join([f"ID: {s['id']}, Titolo: {s['title']}, Skill: {_skills(s)}" for s in available_steps])
         prompt = prompts.create_next_step_selection_prompt(options_text, history_text)
         try:
             next_id_str = get_llm_response(
@@ -140,8 +151,10 @@ class SmartCaseStudyChatbot:
                 temperature=0.1, max_tokens=5
             )
             next_id = int(''.join(filter(str.isdigit, next_id_str)))
-            return next_id if next_id in [s['id'] for s in available_steps] else available_steps[0]['id']
-        except (ValueError, IndexError): return available_steps[0]['id']
+            valid_ids = [s['id'] for s in available_steps]
+            return next_id if next_id in valid_ids else available_steps[0]['id']
+        except (ValueError, IndexError): 
+            return available_steps[0]['id']
 
     def _transition_to_next_step(self):
         next_step_id = self._select_next_step()
@@ -152,7 +165,9 @@ class SmartCaseStudyChatbot:
         current_step_info = self.steps[self.current_step_id]
         next_step_info = self.steps[next_step_id]
         prompt = prompts.create_successful_transition_prompt(
-            current_step_info['title'], next_step_info['title'], next_step_info['description']
+            current_step_info.get('title', ''),
+            next_step_info.get('title', ''),
+            next_step_info.get('description', '')
         )
         self.current_step_id = next_step_id
         self.attempts_on_current_step = 0
@@ -164,31 +179,31 @@ class SmartCaseStudyChatbot:
             self.is_finished = True
             self._save_conversation_history()
             return prompts.FORCED_FINISH_MESSAGE
-        
+
         current_step_info = self.steps[self.current_step_id]
         next_step_info = self.steps[next_step_id]
-        
+
         skills_str = ", ".join([s.get('skill_name', '') for s in current_step_info.get('skills_to_test', [])])
 
         prompt = prompts.create_failed_transition_prompt(
-            current_step_info['title'],
+            current_step_info.get('title', ''),
             current_step_info.get('criteria', 'Nessun criterio specifico.'),
             skills_str,
-            next_step_info['title'],
-            next_step_info['description']
+            next_step_info.get('title', ''),
+            next_step_info.get('description', '')
         )
         self.current_step_id = next_step_id
         self.attempts_on_current_step = 0
         return get_llm_response(prompt=prompt, model=self.INTERVIEWER_MODEL, system_prompt=prompts.SYSTEM_PROMPT)
-        
+
     def _provide_guidance(self):
         current_step_info = self.steps[self.current_step_id]
         history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in self.conversation_history])
-        
+
         skills_str = ", ".join([s.get('skill_name', '') for s in current_step_info.get('skills_to_test', [])])
 
         prompt = prompts.create_guidance_prompt(
-            current_step_info['title'],
+            current_step_info.get('title', ''),
             current_step_info.get('criteria', 'Nessun criterio specifico.'),
             skills_str,
             history_text

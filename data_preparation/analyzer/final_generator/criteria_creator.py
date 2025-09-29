@@ -1,11 +1,8 @@
 import json
 from typing import List
 from pydantic import BaseModel, Field
-# Importiamo il client di OpenAI, supponendo che sia accessibile in questo modo
 from interviewer.llm_service import get_structured_llm_response
 from . import prompts_criteria
-
-# --- 1. Definizione dello Schema Dati con Pydantic ---
 
 class Criterion(BaseModel):
     step_id: int = Field(description="L'ID del reasoning step a cui questo criterio si riferisce.")
@@ -16,23 +13,19 @@ class CriteriaForCase(BaseModel):
     accomplishment_criteria: List[Criterion] = Field(description="Una lista di criteri, uno per ogni reasoning step del caso.")
 
 class CriteriaCollection(BaseModel):
-    """Il modello di primo livello che contiene la lista dei criteri per tutti i casi."""
     criteria_sets: List[CriteriaForCase] = Field(description="Una lista contenente i set di criteri per ciascun caso fornito in input.")
-
-# --- 2. Logica di Generazione ---
 
 FINAL_MODEL = "gpt-4.1-2025-04-14"
 
-def generate_final_criteria(icp_text: str, cases_json_str: str, seniority_level: str) -> CriteriaCollection | None:
+def generate_final_criteria(icp_text: str, cases_json_str: str, seniority_level: str, hr_special_needs: str = "") -> CriteriaCollection | None:
     """
-    Genera una collezione di accomplishment criteria strutturati in formato JSON.
+    Genera accomplishment criteria per tutti gli step/casi, integrando le Indicazioni HR.
     """
     print("1. Creazione del prompt per la generazione dei criteri...")
-    final_prompt = prompts_criteria.create_criteria_generation_prompt(icp_text, cases_json_str, seniority_level)
+    final_prompt = prompts_criteria.create_criteria_generation_prompt(icp_text, cases_json_str, seniority_level, hr_special_needs)
 
     print(f"2. Invio della richiesta al modello '{FINAL_MODEL}' per la generazione dei criteri...")
-    
-    # vvv MODIFICA QUI: Usiamo la nuova funzione del servizio LLM vvv
+
     tool_call_args = get_structured_llm_response(
         prompt=final_prompt,
         model=FINAL_MODEL,

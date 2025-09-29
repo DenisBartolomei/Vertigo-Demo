@@ -1,0 +1,34 @@
+[
+  {
+    "role": "assistant",
+    "content": "Ciao, sono Vertigo: sarò il tuo interlocutore durante questo case, con l’obiettivo di accompagnarti nella riflessione e valutare insieme le tue competenze nell’ambito media e crisis management.\n\nOggi ti propongo un caso che riguarda la revisione di un piano media multi-canale, integrando anche una simulazione di gestione di crisi. Immagina di essere il responsabile media di un’importante azienda alimentare, impegnata nel rilancio di un prodotto molto conosciuto ma un po’ datato. La campagna di rilancio si sviluppa su quattro principali canali: TV nazionale (spot da 30’’ in prime time), digital (display e social), stampa locale e promozioni in-store. A due settimane dal lancio, una recensione negativa su un blog di settore molto seguito solleva dubbi sulla qualità del prodotto, generando un crescente interesse mediatico e qualche segnale di preoccupazione tra i clienti e i distributori.\n\nIl tuo compito sarà duplice: da un lato, dovrai dimostrare come verificheresti che il piano media sia effettivamente coerente con gli obiettivi di comunicazione fissati in partenza; dall’altro, dovrai spiegare come imposteresti la gestione della comunicazione in risposta alla crisi, coordinando tutti i team coinvolti e assicurando messaggi consistenti verso clienti finali e trade.\n\nPartiamo dal primo aspetto: se fossi chiamato a verificare l’allineamento tra gli obiettivi di comunicazione della campagna e il piano media implementato, come imposteresti il processo di analisi? Quali informazioni e passaggi chiave considereresti essenziali per condurre questa verifica in modo strutturato? Puoi anche indicare quali strumenti o dati ti sarebbero utili. \n\nSentiti libero di chiedere eventuali chiarimenti o dati aggiuntivi, se ti servono per strutturare meglio la risposta."
+  },
+  {
+    "role": "user",
+    "content": "si"
+  },
+  {
+    "role": "assistant",
+    "content": "Rispetto allo step appena concluso, è mancata una descrizione strutturata del processo necessario per verificare la coerenza tra piano media e obiettivi di comunicazione. In particolare, sarebbe stato utile vedere come avresti messo a confronto obiettivi/KPI con i dati di copertura, oltre a una maggiore attenzione alla gestione organizzativa in caso di crisi: mancava il coinvolgimento dei team interni, non sono stati individuati ruoli chiave e non hai fornito un esempio concreto di flow comunicativo per gestire un’emergenza. In questo modo sarebbe emersa meglio sia la capacità organizzativa sia quella relazionale oltre alla comprensione dei piani media.\n\nPassando ora alla prossima area di valutazione, vorrei farti questa domanda: considerando i dati di reach e frequenza che hai a disposizione, e tenendo conto delle specificità dei vari canali scelti, come valuteresti se il media mix proposto risponde pienamente alle esigenze di posizionamento e notorietà del brand?"
+  },
+  {
+    "role": "user",
+    "content": "si"
+  },
+  {
+    "role": "assistant",
+    "content": "Grazie per il contributo. In questa fase, sarebbe stato utile vedere una maggiore padronanza nell’analisi dei dati di reach e frequenza in relazione agli obiettivi di brand awareness. Manca una vera giustificazione della scelta del mix media per canale, così come un collegamento chiaro tra le metriche di copertura e le implicazioni commerciali per il brand. Inoltre, sarebbe stato apprezzabile proporre almeno una raccomandazione concreta per ottimizzare la strategia individuata. In sintesi, sarebbe stato importante dimostrare maggiore comprensione delle logiche del piano media e delle relative strategie di comunicazione.\n\nProcediamo alla prossima parte. Vorrei che mi illustrassi, in modo sintetico, come gestiresti una situazione di crisi che coinvolge il brand: quali sono le prime azioni da attivare nei reparti Marketing, Comunicazione e Trade Marketing, e come assicureresti coerenza nei messaggi e nella gestione dei tempi d’escalation?"
+  },
+  {
+    "role": "user",
+    "content": "si"
+  },
+  {
+    "role": "assistant",
+    "content": "In questo step era importante proporre una sequenza chiara di azioni immediate da intraprendere in caso di crisi, specificando i flussi di comunicazione e la suddivisione delle responsabilità tra le funzioni come Marketing, Comunicazione e Trade Marketing. Inoltre, ci si aspettava che venissero esplicitati almeno un criterio di escalation e una modalità per assicurare la coerenza dei messaggi diffusi. Dal tuo contributo sono mancati elementi chiave come il dettaglio sulle responsabilità tra i diversi team e una strategia per l’escalation. Sarebbe stato utile dimostrare maggiormente capacità organizzative e di problem solving, anche attraverso esempi concreti di gestione dei ruoli e delle comunicazioni.\n\nPassando ora alla fase successiva: al termine di una crisi, come presenteresti i risultati di quanto fatto sia all’interno che all’esterno dell’azienda? E quali processi o strumenti proporresti di implementare per ridurre il rischio di situazioni simili in futuro?"
+  },
+  {
+    "role": "user",
+    "content": "si"
+  }
+]

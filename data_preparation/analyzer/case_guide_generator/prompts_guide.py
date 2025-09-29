@@ -9,10 +9,11 @@ o	Attenzione: si intendono solo quei requisiti che sono verificabili attraverso 
 o	Per tutti i requisiti individuati, definire delle modalità tramite cui ritieni più opportuno eseguire la verifica all’interno dei Case.
 o	Sintetizzare i risultati della ricerca in un report finale coerente, in linguaggio naturale, utile per costruire test tecnici e comportamentali sul ruolo."""
 
-def create_case_guide_prompt(icp_text: str, seniority_level: str) -> str:
+def create_case_guide_prompt(icp_text: str, seniority_level: str, hr_special_needs: str) -> str:
     """
-    Assembla il prompt per generare la guida alla creazione della guida alla generazione dei case
+    Prompt per generare la guida alla creazione dei case con integrazione di HR Needs.
     """
+    hr_block = hr_special_needs.strip() if hr_special_needs else "Nessuna indicazione speciale fornita."
     return f"""
 **Istruzioni**:
 o	Analizza passo-passo la ICP riportata di seguito.
@@ -22,6 +23,9 @@ o	Non usare ulteriore testo, oltre a quanto richiesto dall’output.
 o	ATTENZIONE: la sezione della ICP "**Responsabilità principali e attività operative attese**" non rappresenta un requisito per cui sviluppare le modalità di test, bensì rappresenta le attività tramite cui costruire le modalità di test dei requisiti.
 o	Per definire le modalità di verifica dei requisiti, basati (se presenti) sulle responsabilità / attività operative attese per la posizione.
 o	Contieni l’output entro i 2000 token.
+
+**Indicazioni Speciali HR**
+{hr_block}
 ---
 **Esempio di report**
 Guida alla generazione ed esecuzione dei test.
