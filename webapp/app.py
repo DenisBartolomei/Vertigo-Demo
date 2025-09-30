@@ -337,6 +337,7 @@ elif st.session_state.page == "case_selection":
                         st.session_state.page = "intro"
                         st.rerun()
 
+# SOSTITUISCI IL VECCHIO BLOCCO "configurazione" CON QUESTO
 elif st.session_state.page == "configurazione":
     st.title("Benvenuto nella Simulazione di Vertigo AI")
     st.markdown("Carica il tuo CV e scegli/usa la posizione per procedere al colloquio con il Case selezionato.")
@@ -345,36 +346,64 @@ elif st.session_state.page == "configurazione":
 
     with col1:
         st.subheader("1. Carica il tuo CV")
-        uploaded_file = st.file_uploader("Formato PDF o TXT", type=["pdf", "txt"])
+        
+        # --- MODIFICA CHIAVE #1: GESTIONE DELLO STATO DEL CV ---
+        # Controlliamo se un CV è già stato caricato e salvato in session_state.
+        if "uploaded_cv" in st.session_state and st.session_state.uploaded_cv is not None:
+            # Se c'è, mostriamo un messaggio di conferma e un pulsante per cambiarlo.
+            st.success(f"✓ CV Caricato: {st.session_state.uploaded_cv.name}")
+            if st.button("Sostituisci CV", use_container_width=True):
+                # Se l'utente vuole cambiarlo, cancelliamo il CV dallo stato e rieseguiamo
+                del st.session_state.uploaded_cv
+                st.rerun()
+        else:
+            # Se non c'è, mostriamo il file uploader.
+            uploaded_file = st.file_uploader("Formato PDF o TXT", type=["pdf", "txt"], key="cv_uploader")
+            # Se l'utente carica un file, lo salviamo IMMEDIATAMENTE in session_state e rieseguiamo.
+            if uploaded_file:
+                st.session_state.uploaded_cv = uploaded_file
+                st.rerun() # Il rerun è importante per aggiornare la UI e mostrare il messaggio di successo.
 
     with col2:
         st.subheader("2. Seleziona la Posizione Lavorativa")
         # Se esiste già una posizione selezionata (es. dopo la data preparation), usala.
-        selected_position = st.session_state.get("selected_position", None)
-        if selected_position:
-            pos_details = get_single_position_data_from_db(selected_position)
-            st.success(f"Posizione selezionata: {pos_details.get('position_name', selected_position)}")
+        selected_position_id_from_state = st.session_state.get("selected_position", None)
+        
+        # Determina la posizione da usare per la UI
+        # Diamo priorità a quella già in session_state
+        effective_position = selected_position_id_from_state
+
+        if effective_position:
+            pos_details = get_single_position_data_from_db(effective_position)
+            st.success(f"Posizione selezionata: {pos_details.get('position_name', effective_position)}")
             with st.expander("Visualizza Job Description Completa"):
                 if pos_details:
-                    st.text_area("JD", pos_details.get("job_description", "N/D"), height=200, label_visibility="collapsed")
+                    st.text_area("JD", pos_details.get("job_description", "N/D"), height=200, label_visibility="collapsed", key="jd_display_selected")
+        
+        # Mostra la selezione solo se nessuna posizione è stata ancora "fissata" dal flusso precedente
+        available_positions = get_available_positions_from_db()
+        if not available_positions:
+            st.error("Nessuna posizione configurata nel database.")
+            # Disabilita il pulsante se non ci sono posizioni
+            st.button("Seleziona Case per questa posizione", use_container_width=True, disabled=True)
         else:
-            # Flusso legacy: selezione posizione da DB
-            available_positions = get_available_positions_from_db()
-            if not available_positions:
-                st.error("Nessuna posizione configurata nel database.")
-            else:
-                pos_map = {pos["_id"]: pos["position_name"] for pos in available_positions}
-                selected_position = st.radio("Seleziona un ruolo:", options=list(pos_map.keys()), format_func=lambda pid: pos_map[pid], horizontal=False)
+            pos_map = {pos["_id"]: pos["position_name"] for pos in available_positions}
+            # Se non c'è una posizione già selezionata, mostra la radio list per sceglierne una
+            if not effective_position:
+                selected_position_from_radio = st.radio("Seleziona un ruolo:", options=list(pos_map.keys()), format_func=lambda pid: pos_map[pid], horizontal=False)
                 with st.expander("Visualizza Job Description Completa"):
-                    position_details = get_single_position_data_from_db(selected_position)
+                    position_details = get_single_position_data_from_db(selected_position_from_radio)
                     if position_details:
-                        st.text_area("JD", position_details.get("job_description", "N/D"), height=200, label_visibility="collapsed")
+                        st.text_area("JD", position_details.get("job_description", "N/D"), height=200, label_visibility="collapsed", key="jd_display_radio")
+                
+                # Aggiorniamo la posizione effettiva con la scelta della radio
+                effective_position = selected_position_from_radio
 
-                st.markdown(" ")
-                if st.button("Seleziona Case per questa posizione", use_container_width=True):
-                    st.session_state.selected_position = selected_position
-                    st.session_state.page = "case_selection"
-                    st.rerun()
+            st.markdown(" ")
+            if st.button("Seleziona o cambia Case per questa posizione", use_container_width=True):
+                st.session_state.selected_position = effective_position
+                st.session_state.page = "case_selection"
+                st.rerun()
 
     # Checkbox GDPR CONSENT
     consent_given = st.checkbox(
@@ -389,11 +418,11 @@ elif st.session_state.page == "configurazione":
             st.session_state.page = "intro"
             st.rerun()
     with cols[1]:
-        # Determina la posizione effettiva da usare
-        effective_position = st.session_state.get("selected_position") or selected_position
-        if uploaded_file and effective_position and consent_given:
+        # --- MODIFICA CHIAVE #2: Controlliamo il CV direttamente da session_state ---
+        # Il pulsante è attivo se il CV esiste in session_state, c'è una posizione e il consenso è stato dato.
+        if st.session_state.get("uploaded_cv") and effective_position and consent_given:
             if st.button("Conferma e Avvia Preparazione", use_container_width=True, type="primary"):
-                st.session_state.uploaded_cv = uploaded_file
+                # Non c'è più bisogno di salvare 'uploaded_cv' qui, è già nello stato.
                 st.session_state.selected_position = effective_position
                 st.session_state.page = "preparazione"
                 st.rerun()
