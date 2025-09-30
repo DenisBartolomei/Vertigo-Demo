@@ -212,23 +212,41 @@ elif st.session_state.page == "position_setup":
     st.title("Crea/Carica una Posizione e Avvia la Preparazione Dati")
     st.markdown("Inserisci i dettagli della posizione lavorativa e la Knowledge Base. Verrà avviata la pipeline di preparazione dati (ICP, KB summary, Case, Criteri, ecc.).")
     st.divider()
+
+    # --- INIZIO MODIFICA ---
+    # 1. Spostiamo il number_input FUORI dal form e lo colleghiamo a session_state.
+    #    Questo fa sì che l'app si ri-esegua ogni volta che cambi il valore, aggiornando la UI.
+    st.markdown("### Knowledge Base")
+    st.markdown("Seleziona il numero di documenti interni da caricare (es. documentazione, linee guida).")
+    st.number_input(
+        "Quanti documenti vuoi inserire?", 
+        min_value=0, 
+        max_value=20, 
+        step=1, 
+        key="kb_count"  # Usiamo una chiave per salvarlo in session_state
+    )
+    # --- FINE MODIFICA ---
     
     with st.form("position_form", clear_on_submit=False):
+        # I campi del form rimangono qui
         position_id = st.text_input("ID Posizione (univoco)", value="")
         position_name = st.text_input("Titolo Posizione", value="")
         seniority_level = st.selectbox("Seniority Level", ["Junior", "Mid-Level", "Senior", "Lead"], index=1)
         hr_special_needs = st.text_area("Indicazioni Speciali HR (opzionale)", value="", height=100)
         job_description = st.text_area("Job Description", value="", height=250)
+        
+        # --- INIZIO MODIFICA ---
+        # 2. Il ciclo for ora legge il valore da st.session_state.kb_count
+        #    e genera dinamicamente i campi DENTRO il form.
+        if st.session_state.kb_count > 0:
+            st.markdown("---")
+            st.markdown("**Inserisci i documenti della Knowledge Base:**")
 
-        st.markdown("Knowledge Base (documenti interni). Inserisci più documenti (titolo + contenuto).")
-        kb_docs = []
-        kb_count = st.number_input("Quanti documenti vuoi inserire?", min_value=0, max_value=20, step=1, value=0)
-        for i in range(kb_count):
-            with st.expander(f"Documento KB #{i+1}", expanded=False):
-                t = st.text_input(f"Titolo KB #{i+1}", key=f"kb_title_{i}")
-                c = st.text_area(f"Contenuto KB #{i+1}", key=f"kb_content_{i}", height=150)
-                if t or c:
-                    kb_docs.append({"title": t or f"Doc {i+1}", "content": c or ""})
+        for i in range(st.session_state.get("kb_count", 0)):
+            with st.expander(f"Documento KB #{i+1}", expanded=True): # Expanded=True per vederli subito
+                st.text_input(f"Titolo KB #{i+1}", key=f"kb_title_{i}")
+                st.text_area(f"Contenuto KB #{i+1}", key=f"kb_content_{i}", height=150)
+        # --- FINE MODIFICA ---
 
         submitted = st.form_submit_button("Salva Posizione e Avvia Data Preparation", type="primary", use_container_width=True)
 
@@ -236,6 +254,17 @@ elif st.session_state.page == "position_setup":
         if not position_id or not position_name or not job_description:
             st.error("Compila almeno ID posizione, Titolo Posizione e Job Description.")
         else:
+            # --- INIZIO MODIFICA ---
+            # 3. Raccogliamo i dati dai campi dinamici leggendoli da session_state
+            #    dopo che il form è stato inviato.
+            kb_docs = []
+            for i in range(st.session_state.get("kb_count", 0)):
+                title = st.session_state.get(f"kb_title_{i}", "")
+                content = st.session_state.get(f"kb_content_{i}", "")
+                if title or content:
+                    kb_docs.append({"title": title or f"Doc {i+1}", "content": content})
+            # --- FINE MODIFICA ---
+
             payload = {
                 "position_name": position_name,
                 "job_description": job_description,
