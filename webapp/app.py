@@ -212,13 +212,6 @@ elif st.session_state.page == "position_setup":
     st.title("Crea/Carica una Posizione e Avvia la Preparazione Dati")
     st.markdown("Inserisci i dettagli della posizione lavorativa e la Knowledge Base. Verrà avviata la pipeline di preparazione dati (ICP, KB summary, Case, Criteri, ecc.).")
     st.divider()
-
-    kb_count = st.number_input(
-    "Quanti documenti vuoi inserire?",
-    min_value=0, max_value=20, step=1,
-    value=st.session_state.get("kb_count", 0),
-    key="kb_count"
-    )
     
     with st.form("position_form", clear_on_submit=False):
         position_id = st.text_input("ID Posizione (univoco)", value="")
